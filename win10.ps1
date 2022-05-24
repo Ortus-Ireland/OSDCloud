@@ -24,11 +24,11 @@ Import-Module OSD -Force
 
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Internet Explorer\Main" -Name "DisableFirstRunCustomize" -Value 2
 
-$ScriptFromGitHub = Invoke-WebRequest https://raw.githubusercontent.com/OSDeploy/OSD/9484db58a67f10362e31613d94ac3f15db78fe2a/Private/Disk/Diskpart-Clean.ps1 -UseBasicParsing
-Invoke-Expression $($ScriptFromGitHub.Content)
+$ScriptFromGitHub = Invoke-Restmethod https://raw.githubusercontent.com/OSDeploy/OSD/9484db58a67f10362e31613d94ac3f15db78fe2a/Private/Disk/Diskpart-Clean.ps1 -UseBasicParsing
+Invoke-Expression $ScriptFromGitHub
 
-$ScriptFromGitHub = Invoke-WebRequest https://raw.githubusercontent.com/OSDeploy/OSD/9484db58a67f10362e31613d94ac3f15db78fe2a/Private/Disk/New-OSDPartitionSystem.ps1 -UseBasicParsing
-Invoke-Expression $($ScriptFromGitHub.Content)
+$ScriptFromGitHub = Invoke-Restmethod https://raw.githubusercontent.com/OSDeploy/OSD/9484db58a67f10362e31613d94ac3f15db78fe2a/Private/Disk/New-OSDPartitionSystem.ps1 -UseBasicParsing
+Invoke-Expression $ScriptFromGitHub
 
 #Start OSDCloud ZTI the RIGHT way
 
