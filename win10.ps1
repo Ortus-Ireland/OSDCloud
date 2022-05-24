@@ -22,28 +22,11 @@ Write-Host -ForegroundColor Green "Importing OSD PowerShell Module"
 
 Import-Module OSD -Force
 
-function Diskpart-Clean {
-    [CmdletBinding()]
-    param (
-        [Parameter(Position = 0, Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
-        [string]$DiskNumber
-    )
-    #Virtual Machines have issues using PowerShell for Clear-Disk
-    #$OSDDisk | Clear-Disk -RemoveOEM -RemoveData -Confirm:$true -PassThru -ErrorAction SilentlyContinue | Out-Null
-    
-    Write-Verbose "DISKPART> select disk $DiskNumber"
-    Write-Verbose "DISKPART> clean"
-    Write-Verbose "DISKPART> exit"
-    
-    #Abort if not in WinPE
-    if ($env:SystemDrive -ne "X:") {Return}
+$ScriptFromGitHub = Invoke-WebRequest https://raw.githubusercontent.com/OSDeploy/OSD/9484db58a67f10362e31613d94ac3f15db78fe2a/Private/Disk/Diskpart-Clean.ps1
+Invoke-Expression $($ScriptFromGitHub.Content)
 
-$null = @"
-select disk $DiskNumber
-clean
-exit 
-"@ | diskpart.exe
-}
+$ScriptFromGitHub = Invoke-WebRequest https://raw.githubusercontent.com/OSDeploy/OSD/9484db58a67f10362e31613d94ac3f15db78fe2a/Private/Disk/New-OSDPartitionSystem.ps1
+Invoke-Expression $($ScriptFromGitHub.Content)
 
 #Start OSDCloud ZTI the RIGHT way
 
