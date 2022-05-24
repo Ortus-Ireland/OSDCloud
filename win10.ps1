@@ -12,16 +12,6 @@ Set-DisRes 1600
 
 }
 
-#Make sure I have the latest OSD Content
-
-Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
-
-Install-Module OSD -Force
-
-Write-Host -ForegroundColor Green "Importing OSD PowerShell Module"
-
-Import-Module OSD -Force
-
 #$ScriptFromGitHub = Invoke-Restmethod https://raw.githubusercontent.com/OSDeploy/OSD/9484db58a67f10362e31613d94ac3f15db78fe2a/Private/Disk/Diskpart-Clean.ps1
 #Invoke-Expression $ScriptFromGitHub
 function Diskpart-Clean {
@@ -144,6 +134,17 @@ function New-OSDPartitionSystem {
         $PartitionSystem | Set-Partition -NewDriveLetter S
     }
 }
+
+#Make sure I have the latest OSD Content
+
+Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
+
+Install-Module OSD -Force
+
+Write-Host -ForegroundColor Green "Importing OSD PowerShell Module"
+
+Import-Module OSD -Force
+
 
 #Start OSDCloud ZTI the RIGHT way
 
