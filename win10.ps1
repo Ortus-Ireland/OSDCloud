@@ -37,7 +37,8 @@ Import-Module OSD -RequiredVersion 22.5.10.1 -Force
 Write-Host -ForegroundColor Green "Start OSDCloud"
 
 #Start-OSDCloud -OSLanguage en-gb -OSBuild 21H2 -OSEdition Pro -ZTI -SkipAutopilot 
-Start-OSDCloud -SkipAutopilot -ImageFileUrl "z:\win10pro21H2.esd" -ZTI
+#Start-OSDCloud -SkipAutopilot -ImageFileUrl "z:\win10pro21H2.esd" -ZTI
+Start-OSDCloud -SkipAutopilot -ImageFileUrl "z:\images\windows 10\win10-(5).wim" -ZTI
 
 #Restart from WinPE
 
