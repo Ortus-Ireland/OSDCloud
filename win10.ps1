@@ -21,7 +21,7 @@ Set-DisRes 1600
 
 
 #Make sure I have the latest OSD Content
-net use z: \\wds\reminst\esd /username:any /p:any
+net use z: \\wds\reminst\esd /user:any any
 
 Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
 
