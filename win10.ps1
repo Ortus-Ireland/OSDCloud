@@ -21,7 +21,7 @@ Set-DisRes 1600
 
 
 #Make sure I have the latest OSD Content
-net use z: "\\wds\reminst" /user:wds\any any
+#net use z: "\\wds\reminst" /user:wds\any any
 
 Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
 
@@ -38,7 +38,7 @@ Write-Host -ForegroundColor Green "Start OSDCloud"
 
 #Start-OSDCloud -OSLanguage en-gb -OSBuild 21H2 -OSEdition Pro -ZTI -SkipAutopilot 
 #Start-OSDCloud -SkipAutopilot -ImageFileUrl "z:\win10pro21H2.esd" -ZTI
-Start-OSDCloud -SkipAutopilot -ImageFileUrl "z:\images\windows 10\win10-(5).wim" -ZTI
+Start-OSDCloud -SkipAutopilot -ImageFileUrl "http://wds/esd/win10pro21H2.esd" -ZTI
 
 #Restart from WinPE
 
