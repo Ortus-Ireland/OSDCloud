@@ -28,7 +28,7 @@ Install-Module OSD -RequiredVersion 22.5.10.1 -Force
 
 Write-Host -ForegroundColor Green "Importing OSD PowerShell Module"
 
-Import-Module OSD -Force
+Import-Module OSD -RequiredVersion 22.5.10.1 -Force
 
 
 #Start OSDCloud ZTI the RIGHT way
