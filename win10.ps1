@@ -1,6 +1,6 @@
 # Custom Image URL
-#$CustomImageFile = "http://wds/esd/win10pro21H2.esd" # Windows 10 Image
-$CustomImageFile = "http://wds/esd/win11pro21H2.esd" # Windows 11 Image
+#$CustomImageFile = "http://wds/esd/win10pro21H2.esd"; $index = 5 # Windows 10 Image
+$CustomImageFile = "http://wds/esd/win11pro21H2.esd"; $Index = 8 # Windows 11 Image
 
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
 
@@ -33,7 +33,7 @@ Import-Module OSD
 Write-Host -ForegroundColor Green "Start OSDCloud"
 
 #Start-OSDCloud -OSLanguage en-gb -OSBuild 21H2 -OSEdition Pro -ZTI -SkipAutopilot 
-Start-OSDCloud -ImageFileUrl $CustomImageFile -ImageIndex 5 -ZTI -firmware -SkipAutopilot -SkipODT
+Start-OSDCloud -ImageFileUrl $CustomImageFile -ImageIndex $Index -ZTI -firmware -SkipAutopilot -SkipODT
 
 #Restart from WinPE
 
