@@ -1,6 +1,6 @@
 # Custom Image URL
 #$CustomImageFile = "http://wds/esd/win10pro21H2.esd"; $index = 5 # Windows 10 Image
-$CustomImageFile = "http://wds/esd/win11pro21H2.wim"; $Index = 1 # Windows 11 Image
+$CustomImageFile = "http://wds/esd/win11pro21H2a.esd"; $Index = 1 # Windows 11 Image
 
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
 
