@@ -87,7 +87,7 @@ Invoke-OSDCloud
 
 #Restart from WinPE
 Write-Host "Savings computer name to file"
-Set-Content -Path "C:\osdcloud\asset-id.txt" -Value $ComputerName
+Set-Content -Path "C:\osdcloud\computername.txt" -Value $ComputerName
 
 
 Write-Host -ForegroundColor Green "Restarting in 20 seconds!"
