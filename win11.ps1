@@ -89,11 +89,8 @@ Invoke-OSDCloud
 Write-Host "Savings computer name to file"
 Set-Content -Path "C:\osdcloud\computername.txt" -Value $ComputerName
 
-
 Write-Host -ForegroundColor Green "Restarting in 20 seconds!"
 
-$OSDCloud
-pause
-#Start-Sleep -Seconds 20
+Start-Sleep -Seconds 20
 
-#wpeutil reboot
+wpeutil reboot
