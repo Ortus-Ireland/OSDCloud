@@ -40,6 +40,7 @@ Import-Module OSD
     $Global:StartOSDCloud = $null
     $Global:StartOSDCloud = [ordered]@{
         DriverPackUrl = $null
+        DriverPackName = "None"
         DriverPackOffline = $null
         DriverPackSource = $null
         Function = $MyInvocation.MyCommand.Name
@@ -74,6 +75,9 @@ Import-Module OSD
     }
 
 
+function Test-WebConnectionMsUpCat {
+    return $false  
+}
 
 #Start OSDCloud ZTI the RIGHT way
 
