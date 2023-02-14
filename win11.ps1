@@ -50,7 +50,7 @@ Import-Module OSD
         ImageFileName = $null
         ImageFileSource = $null
         ImageFileTarget = $null
-        ImageFileUrl = $ImageFileUrl
+        ImageFileUrl = $CustomImageFile
         IsOnBattery = Get-OSDGather -Property IsOnBattery
         Manufacturer = $Manufacturer
         OSBuild = $OSBuild
@@ -64,13 +64,13 @@ Import-Module OSD
         OSLanguageMenu = $null
         OSLanguageNames = $null
         OSLicense = $null
-        OSImageIndex = $ImageIndex
+        OSImageIndex = $Index
         Product = "none"
         Screenshot = $null
         SkipAutopilot = $SkipAutopilot
-        SkipODT = $SkipODT
+        SkipODT = $true
         TimeStart = Get-Date
-        ZTI = $ZTI
+        ZTI = $true
     }
 
 
@@ -80,8 +80,10 @@ Import-Module OSD
 Write-Host -ForegroundColor Green "Start OSDCloud"
 
 #Start-OSDCloud -OSLanguage en-gb -OSBuild 21H2 -OSEdition Pro -ZTI -SkipAutopilot 
-Start-OSDCloud -ImageFileUrl $CustomImageFile -ImageIndex $Index -ZTI -firmware -SkipAutopilot -SkipODT
+#Start-OSDCloud -ImageFileUrl $CustomImageFile -ImageIndex $Index -ZTI -firmware -SkipAutopilot -SkipODT
 #Start-OSDCloud -ImageFileUrl $CustomImageFile -ImageIndex $Index -firmware -SkipAutopilot -SkipODT
+
+Invoke-OSDCloud
 
 #Restart from WinPE
 Write-Host "Savings computer name to file"
@@ -90,7 +92,7 @@ Set-Content -Path "C:\osdcloud\asset-id.txt" -Value $ComputerName
 
 Write-Host -ForegroundColor Green "Restarting in 20 seconds!"
 
-$StartOSDCloud
+#$StartOSDCloud
 #Start-Sleep -Seconds 20
 
 #wpeutil reboot
