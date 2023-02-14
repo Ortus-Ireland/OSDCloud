@@ -75,10 +75,6 @@ Import-Module OSD
     }
 
 
-function Test-WebConnectionMsUpCat {
-    return $false  
-}
-
 #Start OSDCloud ZTI the RIGHT way
 
 Write-Host -ForegroundColor Green "Start OSDCloud"
@@ -96,7 +92,8 @@ Set-Content -Path "C:\osdcloud\asset-id.txt" -Value $ComputerName
 
 Write-Host -ForegroundColor Green "Restarting in 20 seconds!"
 
-#$StartOSDCloud
+$OSDCloud
+pause
 #Start-Sleep -Seconds 20
 
 #wpeutil reboot
