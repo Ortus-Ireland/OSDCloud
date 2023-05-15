@@ -30,7 +30,7 @@ Write-Host -ForegroundColor Green "Importing OSD PowerShell Module"
 
 #Import-Module OSD -RequiredVersion 22.5.10.1 -Force #Import specific version
 Import-Module OSD
-<#
+
 ######################
 # Build variables
 ######################
@@ -74,13 +74,13 @@ Import-Module OSD
         ZTI = $true
     }
 
-#>
+
 #Start OSDCloud ZTI the RIGHT way
 
 Write-Host -ForegroundColor Green "Start OSDCloud"
 
 #Start-OSDCloud -OSLanguage en-gb -OSBuild 21H2 -OSEdition Pro -ZTI -SkipAutopilot 
-Start-OSDCloud -ImageFileUrl $CustomImageFile -ImageIndex $Index -ZTI -firmware -SkipAutopilot -SkipODT
+#Start-OSDCloud -ImageFileUrl $CustomImageFile -ImageIndex $Index -ZTI -firmware -SkipAutopilot -SkipODT
 #Start-OSDCloud -ImageFileUrl $CustomImageFile -ImageIndex $Index -firmware -SkipAutopilot -SkipODT
 
 Invoke-OSDCloud
