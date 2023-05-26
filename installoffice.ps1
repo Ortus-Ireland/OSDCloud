@@ -8,6 +8,7 @@
 #Add-AppxPackage Microsoft.VCLibs.x64.14.00.Desktop.appx
 #Add-AppxPackage $latestWingetMsixBundle
 # check if Microsoft 365 Apps is installed
+#Add-AppxPackage -Register 'C:\Program Files\WindowsApps\Microsoft.Winget.Source_2021.112.1815.519_neutral_8wekyb3d8bbwe\AppManifest.xml' -DisableDevelopmentMode
 
 if (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -like "Microsoft 365 Apps*" }) {
     Write-Host "Microsoft 365 Apps is installed"
