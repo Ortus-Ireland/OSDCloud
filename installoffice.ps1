@@ -1,0 +1,18 @@
+# Install Winget
+#$progressPreference = 'silentlyContinue'
+#$latestWingetMsixBundleUri = $(Invoke-RestMethod https://api.github.com/repos/microsoft/winget-cli/releases/latest).assets.browser_download_url | Where-Object {$_.EndsWith(".msixbundle")}
+#$latestWingetMsixBundle = $latestWingetMsixBundleUri.Split("/")[-1]
+#Write-Information "Downloading winget to artifacts directory..."
+#Invoke-WebRequest -Uri $latestWingetMsixBundleUri -OutFile "./$latestWingetMsixBundle"
+#Invoke-WebRequest -Uri https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx -OutFile Microsoft.VCLibs.x64.14.00.Desktop.appx
+#Add-AppxPackage Microsoft.VCLibs.x64.14.00.Desktop.appx
+#Add-AppxPackage $latestWingetMsixBundle
+
+# Install Office using Winget
+winget install --id Microsoft.Office --accept-source-agreements
+
+# Copy Office Shortcuts to Desktop
+copy-item -path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Outlook.lnk" -Destination "c:\users\public\desktop\Outlook.lnk" -Force
+copy-item -path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Word.lnk" -Destination "c:\users\public\desktop\Word.lnk" -Force
+copy-item -path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Excel.lnk" -Destination "c:\users\public\desktop\Excel.lnk" -Force
+copy-item -path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\PowerPoint.lnk" -Destination "c:\users\public\desktop\PowerPoint.lnk" -Force
