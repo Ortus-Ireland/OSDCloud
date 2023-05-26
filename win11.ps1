@@ -2,6 +2,38 @@
 #$CustomImageFile = "http://wds/esd/win10pro21H2.esd"; $index = 8 # Windows 10 Image
 $CustomImageFile = "http://wds/esd/win11pro21H2drivers.esd"; $Index = 1 # Windows 11 Image
 
+function Show-Menu {
+    param (
+        [string]$Title = 'Image Selection'
+    )
+    Clear-Host
+    Write-Host "================ $Title ================"
+    
+    Write-Host "1: Image with all drivers"
+    Write-Host "2: Surface Go 3"
+}
+
+
+do
+ {
+    Show-Menu
+    $selection = Read-Host "Please make a selection"
+    switch ($selection)
+    {
+    '1' {
+    write-host 'Using Image with all drivers'
+    $CustomImageFile = "http://wds/esd/win11pro21H2drivers.esd"
+    $selection = 'q'
+    } '2' {
+    write-host 'Using Surface Go 3 image'
+    $CustomImageFile = "http://wds/esd/win11_SurfaceGo.esd"
+    $selection = 'q'
+    }
+    }
+    
+ }
+ until ($selection -eq 'q')
+ 
 Add-Type -AssemblyName Microsoft.VisualBasic
 $ComputerName = [Microsoft.VisualBasic.Interaction]::InputBox('Computer Name', 'Computer Name', "Enter computer name here")
 Write-Host "Computer will be renamed to $ComputerName once complete"
