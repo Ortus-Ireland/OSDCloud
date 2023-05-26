@@ -22,3 +22,12 @@ else {
     copy-item -path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Excel.lnk" -Destination "c:\users\public\desktop\Excel.lnk" -Force
     copy-item -path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\PowerPoint.lnk" -Destination "c:\users\public\desktop\PowerPoint.lnk" -Force
 }
+
+# Check if Teams Machine-Wide Installer is installed
+if (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -like "Teams Machine-Wide Installer*" }) {
+    Write-Host "Teams Machine-Wide Installer is installed"
+}
+else {
+    # Install Teams Machine-Wide Installer using Winget
+    winget install --id Microsoft.Teams --accept-source-agreements
+}
