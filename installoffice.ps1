@@ -11,10 +11,6 @@
 
 if (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -like "Microsoft 365 Apps*" }) {
     Write-Host "Microsoft 365 Apps is installed"
-    copy-item -path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Outlook.lnk" -Destination "c:\users\public\desktop\Outlook.lnk" -Force
-    copy-item -path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Word.lnk" -Destination "c:\users\public\desktop\Word.lnk" -Force
-    copy-item -path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Excel.lnk" -Destination "c:\users\public\desktop\Excel.lnk" -Force
-    copy-item -path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\PowerPoint.lnk" -Destination "c:\users\public\desktop\PowerPoint.lnk" -Force
 }
 else {
     # Install Office using Winget
