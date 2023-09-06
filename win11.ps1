@@ -33,9 +33,19 @@ do
     
  }
  until ($selection -eq 'q')
+
+# Set allowed ASCII character codes to Uppercase letters (65..90), 
+$charcodes = 65..90
+
+# Convert allowed character codes to characters
+$allowedChars = $charcodes | ForEach-Object { [char][byte]$_ }
+
+$LengthOfName = 10
+# Generate computer name
+$randomName = ($allowedChars | Get-Random -Count $LengthOfName) -join ""
  
 Add-Type -AssemblyName Microsoft.VisualBasic
-$ComputerName = [Microsoft.VisualBasic.Interaction]::InputBox('Computer Name', 'Computer Name', "Enter computer name here")
+$ComputerName = [Microsoft.VisualBasic.Interaction]::InputBox('Computer Name', 'Computer Name', $randomName)
 Write-Host "Computer will be renamed to $ComputerName once complete"
 Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
 
