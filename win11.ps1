@@ -11,6 +11,7 @@ function Show-Menu {
     
     Write-Host "1: Image with all drivers"
     Write-Host "2: Surface Go 3"
+    Write-Host "3: Surface Pro 9"
 }
 
 
@@ -27,6 +28,10 @@ do
     } '2' {
     write-host 'Using Surface Go 3 image'
     $CustomImageFile = "http://wds/esd/win11_SurfaceGo.esd"
+    $selection = 'q'
+    } '3' {
+    write-host 'Using Surface Pro 9 image'
+    $CustomImageFile = "http://wds/esd/win11_SurfacePro9.esd"
     $selection = 'q'
     }
     }
