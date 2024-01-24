@@ -118,6 +118,7 @@ Import-Module OSD
         SkipAutopilot = $SkipAutopilot
         SkipODT = $true
         TimeStart = Get-Date
+        updateFirmware = $false
         ZTI = $true
     }
 
