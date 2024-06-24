@@ -10,10 +10,10 @@ function Show-Menu {
     Write-Host "================ $Title ================"
     
     Write-Host "1: Image with all drivers"
-    Write-Host "2: Surface Go 3"
-    Write-Host "3: Surface Pro 9"
-    Write-Host "4: Lenovo G6"
-    Write-Host "5: Surface Go 4"
+    Write-Host "2: Surface Pro 9"
+    Write-Host "3: Lenovo G6"
+    Write-Host "4: Surface Go 4"
+    Write-Host "5: ThinkCentre M70s G3"
     
 }
 
@@ -29,20 +29,20 @@ do
     $CustomImageFile = "http://wds/esd/win11pro21H2drivers.esd"
     $selection = 'q'
     } '2' {
-    write-host 'Using Surface Go 3 image'
-    $CustomImageFile = "http://wds/esd/win11_SurfaceGo.esd"
-    $selection = 'q'
-    } '3' {
     write-host 'Using Surface Pro 9 image'
     $CustomImageFile = "http://wds/esd/win11_SurfacePro9.esd"
     $selection = 'q'
-    } '4' {
-    write-host 'Using Surface Pro 9 image'
+    } '3' {
+    write-host 'Using Lenovo G6 image'
     $CustomImageFile = "http://wds/esd/win11_LenovoG6.esd"
     $selection = 'q'
-    } '5' {
+    } '4' {
     write-host 'Using Surface Go 4 image'
     $CustomImageFile = "http://wds/esd/win11_SurfaceGo4.esd"
+    $selection = 'q'
+    } '5' {
+    write-host 'Using ThinkCentre M70s G3 image'
+    $CustomImageFile = "http://wds/esd/win11_ThinkCentreM70sG3.esd"
     $selection = 'q'
     }
     
