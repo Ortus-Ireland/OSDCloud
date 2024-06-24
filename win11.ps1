@@ -41,7 +41,7 @@ do
     $CustomImageFile = "http://wds/esd/win11_LenovoG6.esd"
     $selection = 'q'
     } '5' {
-    write-host 'Using Surface Go 3 image'
+    write-host 'Using Surface Go 4 image'
     $CustomImageFile = "http://wds/esd/win11_SurfaceGo4.esd"
     $selection = 'q'
     }
