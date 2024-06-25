@@ -65,7 +65,7 @@ Write-Host "Starting Lenovo ThinkBook G6 Image Update" -ForegroundColor white -B
 Dism /Mount-Image /ImageFile:R:\ImageStaging\LenovoThinkBookG6\install.wim /MountDir:R:\ImageStaging\LenovoThinkBookG6\Mount /Index:5
 
 ## -- Add Drivers -- ##
-Dism /Image:R:\ImageStaging\LenovoThinkBookG6\Mount /Add-Driver /Driver:C:\Drivers\LenovoThinkBookG6 /Recurse
+Dism /Image:R:\ImageStaging\LenovoThinkBookG6\Mount /Add-Driver /Driver:R:\LenovoThinkBookG6 /Recurse
 
 ## -- Unmount WIM and Commit Changes -- ##
 Dism /Unmount-Image /MountDir:R:\ImageStaging\LenovoThinkBookG6\Mount /Commit
@@ -94,7 +94,7 @@ Write-Host "Starting Surface Pro 9 Image Update" -ForegroundColor white -Backgro
 Dism /Mount-Image /ImageFile:R:\ImageStaging\SurfacePro9\install.wim /MountDir:R:\ImageStaging\SurfacePro9\Mount /Index:5
 
 ## -- Add Drivers -- ##
-Dism /Image:R:\ImageStaging\SurfacePro9\Mount /Add-Driver /Driver:C:\Drivers\SurfacePro9 /Recurse
+Dism /Image:R:\ImageStaging\SurfacePro9\Mount /Add-Driver /Driver:R:\SurfacePro9 /Recurse
 
 ## -- Unmount WIM and Commit Changes -- ##
 Dism /Unmount-Image /MountDir:R:\ImageStaging\SurfacePro9\Mount /Commit
@@ -123,7 +123,7 @@ Write-Host "Starting Surface Go 4 Image Update" -ForegroundColor white -Backgrou
 Dism /Mount-Image /ImageFile:R:\ImageStaging\SurfaceGo4\install.wim /MountDir:R:\ImageStaging\SurfaceGo4\Mount /Index:5
 
 ## -- Add Drivers -- ##
-Dism /Image:R:\ImageStaging\SurfaceGo4\Mount /Add-Driver /Driver:c:\Drivers\SurfaceGo4 /Recurse
+Dism /Image:R:\ImageStaging\SurfaceGo4\Mount /Add-Driver /Driver:R:\SurfaceGo4 /Recurse
 
 ## -- Unmount WIM and Commit Changes -- ##
 Dism /Unmount-Image /MountDir:R:\ImageStaging\SurfaceGo4\Mount /Commit
@@ -152,7 +152,7 @@ Write-Host "Starting ThinkCentre M70s G3 Update" -ForegroundColor white -Backgro
 Dism /Mount-Image /ImageFile:R:\ImageStaging\ThinkCentreM70sG3\Install.wim /MountDir:R:\ImageStaging\ThinkCentreM70sG3\Mount /Index:5
 
 ## -- Add Drivers -- ##
-Dism /Image:R:\ImageStaging\ThinkCentreM70sG3\Mount /Add-Driver /Driver:C:\Drivers\ThinkCentreM70sG3 /Recurse
+Dism /Image:R:\ImageStaging\ThinkCentreM70sG3\Mount /Add-Driver /Driver:R:\ThinkCentreM70sG3 /Recurse
 
 ## -- Unmount WIM and Commit Changes -- ##
 Dism /Unmount-Image /MountDir:R:\ImageStaging\ThinkCentreM70sG3\Mount /Commit
