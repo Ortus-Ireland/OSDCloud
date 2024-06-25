@@ -12,7 +12,7 @@ copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\LenovoG6\inst
 copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\SurfacePro9\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\SurfaceGo4\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\ThinkCentreM70sG3\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false
-copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\Win11_AllDrivers\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
+copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\Win11Pro_Generic\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 
 
 ############################################
