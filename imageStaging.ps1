@@ -46,7 +46,7 @@ Write-Host ""
 
 ## -- Add Drivers -- ##
 Dism /Image:C:\ImageStaging\SurfacePro9\Mount /Add-Driver /Driver:C:\Drivers\SurfacePro9 /Recurse
-
+Write-Host ""
 Write-Host "Surface Pro 9 Drivers Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
 
@@ -84,7 +84,7 @@ Write-Host ""
 
 ## -- Add Drivers -- ##
 Dism /Image:C:\ImageStaging\LenovoThinkBookG6\Mount /Add-Driver /Driver:C:\Drivers\LenovoThinkBookG6 /Recurse
-
+Write-Host ""
 Write-Host "Lenovo ThinkBook G6 Drivers Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
 
@@ -126,7 +126,7 @@ Write-Host ""
 
 ## -- Add Drivers -- ##
 Dism /Image:C:\ImageStaging\SurfaceGo4\Mount /Add-Driver /Driver:C:\Drivers\SurfaceGo4 /Recurse
-
+Write-Host ""
 Write-Host "Surface Go 4 Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
 
@@ -165,7 +165,7 @@ Write-Host ""
 
 ## -- Add Drivers -- ##
 Dism /Image:C:\ImageStaging\ThinkCentreM70sG3\Mount /Add-Driver /Driver:C:\Drivers\ThinkCentreM70sG3 /Recurse
-
+Write-Host ""
 Write-Host "Lenovo ThinkCentre M70s G3 Drivers Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
 
