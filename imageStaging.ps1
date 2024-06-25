@@ -85,6 +85,7 @@ Write-Host "Surface Pro 9 Move Successful" -ForegroundColor white -BackgroundCol
 Remove-Item C:\ImageStaging\SurfacePro9\install.wim
 
 # Notify
+Write-Host " "
 Write-Host "Surface Pro 9 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 
 #########################
@@ -116,14 +117,15 @@ Dism /Unmount-Image /MountDir:C:\ImageStaging\LenovoThinkBookG6\Mount /Commit
 Dism /Export-Image /SourceImageFile:C:\ImageStaging\LenovoThinkBookG6\install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\LenovoThinkBookG6\Win11_LenovoThinkBookG6.esd /Compress:recovery /CheckIntegrity
 
 ## -- Move ESD to IntePub -- ##
-Move-Item C:\ImageStaging\LenovoG6\Win11_LenovoThinkBookG6.esd -Destination c:\inetpub\wwwroot\esd\Win11_LenovoThinkBookG6.esd -Force
+Move-Item C:\ImageStaging\LenovoThinkBookG6\Win11_LenovoThinkBookG6.esd -Destination c:\inetpub\wwwroot\esd\Win11_LenovoThinkBookG6.esd -Force
 Write-Host "Lenovo ThinkBook G6 Move Successful" -ForegroundColor white -BackgroundColor darkgreen
 
 ## -- Remove install.wim -- ##
-Remove-Item C:\ImageStaging\LenovoG6\install.wim
+Remove-Item C:\ImageStaging\LenovoThinkBookG6\install.wim
 
 # Notify
-Write-Host "Lenovo G6 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host " "
+Write-Host "Lenovo ThinkBook G6 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 
 
 ##################
@@ -145,7 +147,7 @@ Write-Host ""
 ## -- Add Drivers -- ##
 Dism /Image:C:\ImageStaging\SurfaceGo4\Mount /Add-Driver /Driver:C:\Drivers\SurfaceGo4 /Recurse
 Write-Host ""
-Write-Host "Surface Go 4 Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host "Surface Go 4 Drivers Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
 
 ## -- Unmount WIM and Commit Changes -- ##
@@ -162,6 +164,7 @@ Write-Host "Surface Go 4 Move Successful" -ForegroundColor white -BackgroundColo
 Remove-Item C:\ImageStaging\SurfaceGo4\install.wim
 
 # Notify
+Write-Host " "
 Write-Host "Surface Go 4 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 
 
@@ -201,7 +204,8 @@ Write-Host "Lenovo ThinkCentre M70s Move Successful" -ForegroundColor white -Bac
 Remove-Item C:\ImageStaging\ThinkCentreM70sG3\install.wim
 
 # Notify
-Write-Host "ThinkCentre M70s Update Complete" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host " "
+Write-Host "Lenovo ThinkCentre M70s Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 
 ############################################
 ## Windows 11 Pro Generic (Untouched ISO) ##
@@ -232,11 +236,11 @@ Write-Host ""
 # Notify
 Write-Host "Windows 11 Pro (Generic) Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
-Write-Host ""
 
 ##############################
 ## Notify When All Complete ##
 ##############################
+Write-Host " "
 Write-Host "***********************************" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host "* All Images Updated Successfully *" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host "***********************************" -ForegroundColor white -BackgroundColor darkgreen
