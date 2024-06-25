@@ -154,7 +154,7 @@ Write-Host ""
 Dism /Unmount-Image /MountDir:C:\ImageStaging\SurfaceGo4\Mount /Commit
 
 ## -- Convert WIM to ESD -- ##
-Dism /Export-Image /SourceImageFile:C:\ImageStaging\SurfaceGo4\install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\SurfaceGo4\install.esd /Compress:recovery /CheckIntegrity
+Dism /Export-Image /SourceImageFile:C:\ImageStaging\SurfaceGo4\install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\SurfaceGo4\Win11_SurfaceGo4.esd /Compress:recovery /CheckIntegrity
  
 ## -- Move ESD to IntePub -- ##
 Move-Item C:\ImageStaging\SurfaceGo4\Win11_SurfaceGo4.esd -Destination c:\inetpub\wwwroot\esd\Win11_SurfaceGo4.esd -Force
