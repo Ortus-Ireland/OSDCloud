@@ -26,22 +26,26 @@ do
     switch ($selection)
     {
     '1' {
-    write-host 'Using Image with all drivers'
+    write-host 'Using Windows 11 Pro (Generic) Image'
     $CustomImageFile = "http://wds/esd/Win11Pro_Generic.esd"
     $selection = 'q'
     } '2' {
+    write-host 'Using Windows 10 Pro (Generic) Image'
+    $CustomImageFile = "http://wds/esd/Windows10Pro_Generic.esd"
+    $selection = 'q'
+    } '3' {
     write-host 'Using Surface Pro 9 image'
     $CustomImageFile = "http://wds/esd/Win11_SurfacePro9.esd"
     $selection = 'q'
-    } '3' {
-    write-host 'Using Lenovo G6 image'
-    $CustomImageFile = "http://wds/esd/Win11_LenovoG6.esd"
-    $selection = 'q'
     } '4' {
+    write-host 'Using Lenovo ThinkBook G6 image'
+    $CustomImageFile = "http://wds/esd/Win11_LenovoThinkBookG6.esd"
+    $selection = 'q'
+    } '5' {
     write-host 'Using Surface Go 4 image'
     $CustomImageFile = "http://wds/esd/Win11_SurfaceGo4.esd"
     $selection = 'q'
-    } '5' {
+    } '6' {
     write-host 'Using ThinkCentre M70s G3 image'
     $CustomImageFile = "http://wds/esd/Win11_ThinkCentreM70sG3.esd"
     $selection = 'q'
