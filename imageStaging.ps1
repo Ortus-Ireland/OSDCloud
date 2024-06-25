@@ -19,6 +19,8 @@ copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\Win11Pro_Gene
 ## Windows 11 Pro Generic (Untouched ISO) ##
 ############################################
 
+Write-Host "Starting Windows 11 Pro Generic Image Update" -ForegroundColor white -BackgroundColor blue
+
 ## -- Mount Image -- ##
 Dism /Mount-Image /ImageFile:C:\ImageStaging\Win11Pro_Generic\Install.wim /MountDir:C:\ImageStaging\Win11Pro_Generic\Mount /Index:5
 
@@ -42,6 +44,8 @@ Write-Host "Windows 11 Pro (Generic) Update Complete" -ForegroundColor white -Ba
 ###############
 ## Lenovo G6 ##
 ###############
+
+Write-Host "Starting Lenovo G6 Image Update" -ForegroundColor white -BackgroundColor blue
 
 ## -- Mount Image -- ##
 Dism /Mount-Image /ImageFile:C:\ImageStaging\LenovoG6\install.wim /MountDir:C:\ImageStaging\LenovoG6\Mount /Index:5
@@ -70,6 +74,8 @@ Write-Host "Lenovo G6 Update Complete" -ForegroundColor white -BackgroundColor d
 ## Surface Pro 9 ##
 ###################
 
+Write-Host "Starting Surface Pro 9 Image Update" -ForegroundColor white -BackgroundColor blue
+
 ## -- Mount Image -- ##
 Dism /Mount-Image /ImageFile:C:\ImageStaging\SurfacePro9\install.wim /MountDir:C:\ImageStaging\SurfacePro9\Mount /Index:5
 
@@ -97,6 +103,8 @@ Write-Host "Surface Pro 9 Update Complete" -ForegroundColor white -BackgroundCol
 ## Surface Go 4 ##
 ##################
 
+Write-Host "Starting Surface Go 4 Image Update" -ForegroundColor white -BackgroundColor blue
+
 ## -- Mount Image -- ##
 Dism /Mount-Image /ImageFile:C:\ImageStaging\SurfaceGo4\install.wim /MountDir:C:\ImageStaging\SurfaceGo4\Mount /Index:5
 
@@ -123,6 +131,8 @@ Write-Host "Surface Go 4 Update Complete" -ForegroundColor white -BackgroundColo
 ################################
 ## Lenovo ThinkCentre M70s G3 ##
 ################################
+
+Write-Host "Starting ThinkCentre M70s G3 Update" -ForegroundColor white -BackgroundColor blue
 
 ## -- Mount Image -- ##
 Dism /Mount-Image /ImageFile:C:\ImageStaging\ThinkCentreM70sG3\Install.wim /MountDir:C:\ImageStaging\ThinkCentreM70sG3\Mount /Index:5
