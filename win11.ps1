@@ -9,11 +9,12 @@ function Show-Menu {
     Clear-Host
     Write-Host "================ $Title ================"
     
-    Write-Host "1: Win11 Pro (Generic)"
-    Write-Host "2: Surface Pro 9"
-    Write-Host "3: Lenovo G6"
-    Write-Host "4: Surface Go 4"
-    Write-Host "5: ThinkCentre M70s G3"
+    Write-Host "1: Windows 11 Pro (Generic)"
+    Write-Host "2: Windows 10 Pro (Generic)"
+    Write-Host "3: Surface Pro 9"
+    Write-Host "4: Lenovo ThinkBook G6"
+    Write-Host "5: Surface Go 4"
+    Write-Host "6: Lenovo ThinkCentre M70s G3"
     
 }
 
