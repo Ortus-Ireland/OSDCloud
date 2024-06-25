@@ -3,9 +3,9 @@ Write-Host "Make sure Windows ISO is mounted to D:\ before continuing!" -Foregro
 Write-Host "Press any key to continue or CTRL+C to cancel..."
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
 Write-Host ""
-Write-Host "Copying ImageStaging to RAM Disk..." -ForegroundColor white -BackgroundColor blue
+Write-Host "Copying ImageStaging to RAMDisk..." -ForegroundColor white -BackgroundColor blue
 
-## Copy ImageStaging to RAM Disk
+## Copy ImageStaging to RAMDisk
 Copy-Item -Path C:\ImageStaging -Destination R:\ImageStaging -recurse -Force
 Write-Host "RAMDisk Initialised..." -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
