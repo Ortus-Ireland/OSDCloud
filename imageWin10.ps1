@@ -20,8 +20,8 @@ Dism /Unmount-Image /MountDir:C:\ImageStaging\Win10Pro_Generic\Mount /Commit
 Dism /Export-Image /SourceImageFile:C:\ImageStaging\Win10Pro_Generic\Install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\Win10Pro_Generic\Win10Pro_Generic.esd /Compress:recovery /CheckIntegrity
 
 ## -- Move ESD to IntePub -- ##
-Move-Item C:\ImageStaging\Win10Pro_Generic\Win11Pro_Generic.esd -Destination c:\inetpub\wwwroot\esd\Win10Pro_Generic.esd -Force
-Write-Host "Windows 11 Pro (Generic) Move Successful" -ForegroundColor white -BackgroundColor darkgreen
+Move-Item C:\ImageStaging\Win10Pro_Generic\Win10Pro_Generic.esd -Destination c:\inetpub\wwwroot\esd\Win10Pro_Generic.esd -Force
+Write-Host "Windows 10 Pro (Generic) Move Successful" -ForegroundColor white -BackgroundColor darkgreen
 
 ## -- Remove install.wim -- ##
 Remove-Item C:\ImageStaging\Win10Pro_Generic\install.wim
