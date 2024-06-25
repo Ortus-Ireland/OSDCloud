@@ -31,7 +31,7 @@ do
     $selection = 'q'
     } '2' {
     write-host 'Using Windows 10 Pro (Generic) Image'
-    $CustomImageFile = "http://wds/esd/Windows10Pro_Generic.esd"
+    $CustomImageFile = "http://wds/esd/Win10Pro_Generic.esd"
     $selection = 'q'
     } '3' {
     write-host 'Using Surface Pro 9 image'
