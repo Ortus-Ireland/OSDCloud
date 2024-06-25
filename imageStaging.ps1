@@ -29,6 +29,40 @@ copy-item R:\ImageStaging\install.wim -destination R:\ImageStaging\Win11Pro_Gene
 Write-Host "Install.wim copied successfully!" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
 
+###################
+## Surface Pro 9 ##
+###################
+
+Write-Host "Starting Surface Pro 9 Image Update" -ForegroundColor white -BackgroundColor blue
+
+## -- Mount Image -- ##
+Dism /Mount-Image /ImageFile:R:\ImageStaging\SurfacePro9\install.wim /MountDir:R:\ImageStaging\SurfacePro9\Mount /Index:5
+
+Write-Host "Adding Drivers for Surface Pro 9" -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+
+## -- Add Drivers -- ##
+Dism /Image:R:\ImageStaging\SurfacePro9\Mount /Add-Driver /Driver:C:\Drivers\SurfacePro9 /Recurse
+
+Write-Host "Surface Pro 9 Drivers Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host ""
+
+## -- Unmount WIM and Commit Changes -- ##
+Dism /Unmount-Image /MountDir:R:\ImageStaging\SurfacePro9\Mount /Commit
+
+## -- Convert WIM to ESD -- ##
+Dism /Export-Image /SourceImageFile:R:\ImageStaging\SurfacePro9\install.wim /SourceIndex:5 /DestinationImageFile:R:\ImageStaging\SurfacePro9\Win11_SurfacePro9.esd /Compress:recovery /CheckIntegrity
+
+## -- Move ESD to IntePub -- ##
+Move-Item R:\ImageStaging\SurfacePro9\Win11_SurfacePro9.esd -Destination c:\inetpub\wwwroot\esd\Win11_SurfacePro9.esd
+Write-Host "Surface Pro 9 Move Successful" -ForegroundColor white -BackgroundColor darkgreen
+
+## -- Remove install.wim -- ##
+Remove-Item R:\ImageStaging\SurfacePro9\install.wim
+
+# Notify
+Write-Host "Surface Pro 9 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
+
 #########################
 ## Lenovo ThinkBook G6 ##
 #########################
@@ -64,39 +98,7 @@ Remove-Item R:\ImageStaging\LenovoG6\install.wim
 Write-Host "Lenovo G6 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 
 
-###################
-## Surface Pro 9 ##
-###################
 
-Write-Host "Starting Surface Pro 9 Image Update" -ForegroundColor white -BackgroundColor blue
-
-## -- Mount Image -- ##
-Dism /Mount-Image /ImageFile:R:\ImageStaging\SurfacePro9\install.wim /MountDir:R:\ImageStaging\SurfacePro9\Mount /Index:5
-
-Write-Host "Adding Drivers for Surface Pro 9" -ForegroundColor white -BackgroundColor blue
-Write-Host ""
-
-## -- Add Drivers -- ##
-Dism /Image:R:\ImageStaging\SurfacePro9\Mount /Add-Driver /Driver:C:\Drivers\SurfacePro9 /Recurse
-
-Write-Host "Surface Pro 9 Drivers Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
-Write-Host ""
-
-## -- Unmount WIM and Commit Changes -- ##
-Dism /Unmount-Image /MountDir:R:\ImageStaging\SurfacePro9\Mount /Commit
-
-## -- Convert WIM to ESD -- ##
-Dism /Export-Image /SourceImageFile:R:\ImageStaging\SurfacePro9\install.wim /SourceIndex:5 /DestinationImageFile:R:\ImageStaging\SurfacePro9\Win11_SurfacePro9.esd /Compress:recovery /CheckIntegrity
-
-## -- Move ESD to IntePub -- ##
-Move-Item R:\ImageStaging\SurfacePro9\Win11_SurfacePro9.esd -Destination c:\inetpub\wwwroot\esd\Win11_SurfacePro9.esd
-Write-Host "Surface Pro 9 Move Successful" -ForegroundColor white -BackgroundColor darkgreen
-
-## -- Remove install.wim -- ##
-Remove-Item R:\ImageStaging\SurfacePro9\install.wim
-
-# Notify
-Write-Host "Surface Pro 9 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 
 
 ##################
