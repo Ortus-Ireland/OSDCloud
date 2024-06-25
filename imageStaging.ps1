@@ -40,7 +40,7 @@ Write-Host ""
 
 ## -- Mount Image -- ##
 Dism /Mount-Image /ImageFile:C:\ImageStaging\SurfacePro9\install.wim /MountDir:C:\ImageStaging\SurfacePro9\Mount /Index:5
-
+Write-Host ""
 Write-Host "Adding Drivers for Surface Pro 9" -ForegroundColor white -BackgroundColor blue
 Write-Host ""
 
@@ -78,7 +78,7 @@ Write-Host ""
 
 ## -- Mount Image -- ##
 Dism /Mount-Image /ImageFile:C:\ImageStaging\LenovoThinkBookG6\install.wim /MountDir:C:\ImageStaging\LenovoThinkBookG6\Mount /Index:5
-
+Write-Host ""
 Write-Host "Adding Drivers for Lenovo ThinkBook G6" -ForegroundColor white -BackgroundColor blue
 Write-Host ""
 
@@ -120,7 +120,7 @@ Write-Host ""
 
 ## -- Mount Image -- ##
 Dism /Mount-Image /ImageFile:C:\ImageStaging\SurfaceGo4\install.wim /MountDir:C:\ImageStaging\SurfaceGo4\Mount /Index:5
-
+Write-Host ""
 Write-Host "Adding Drivers for Surface Go 4" -ForegroundColor white -BackgroundColor blue
 Write-Host ""
 
@@ -159,7 +159,7 @@ Write-Host ""
 
 ## -- Mount Image -- ##
 Dism /Mount-Image /ImageFile:C:\ImageStaging\ThinkCentreM70sG3\Install.wim /MountDir:C:\ImageStaging\ThinkCentreM70sG3\Mount /Index:5
-
+Write-Host ""
 Write-Host "Adding Drivers for Lenovo ThinkCentre M70s G3" -ForegroundColor white -BackgroundColor blue
 Write-Host ""
 
@@ -210,7 +210,7 @@ Write-Host "Windows 11 Pro (Generic) Move Successful" -ForegroundColor white -Ba
 
 ## -- Remove install.wim -- ##
 Remove-Item C:\ImageStaging\Win11Pro_Generic\install.wim
-
+Write-Host ""
 # Notify
 Write-Host "Windows 11 Pro (Generic) Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
