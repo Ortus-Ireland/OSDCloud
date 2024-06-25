@@ -1,4 +1,10 @@
-### Step 1
+Write-Host "Beginning Ortus Windows Image Update..."
+Write-Host "Make sure Windows ISO is mounted to D:\ before continuing!" -ForegroundColor white -BackgroundColor magenta
+Write-Host "Press any key to continue...." -NoNewLine
+$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
+
+Write-Host "Copying install.wim from source..." -ForegroundColor white -BackgroundColor blue
+
 # Download the latest Windows 11 ISO from the Microsoft Visual Studio Online portal. 
 # Mount the ISO and extract the install.wim file from the D:\Sources folder and place it in C:\ImageStaging:
 copy-item D:\sources\install.wim -destination C:\ImageStaging\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
@@ -14,6 +20,9 @@ copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\SurfaceGo4\in
 copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\ThinkCentreM70sG3\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false
 copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\Win11Pro_Generic\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 
+Write-Host "Install.wim copied successfully!" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host ""
+Write-Host ""
 
 ############################################
 ## Windows 11 Pro Generic (Untouched ISO) ##
