@@ -14,7 +14,7 @@ copy-item D:\sources\install.wim -destination C:\ImageStaging\install.wim -PassT
 # dism /Get-WimInfo /WimFile:C:\ImageStaging\install.wim
 
 ### Step 3 (Copy install.wim to device folders)
-copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\LenovoG6\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
+copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\LenovoThinkBookG6\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\SurfacePro9\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\SurfaceGo4\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\ThinkCentreM70sG3\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false
@@ -49,27 +49,27 @@ Remove-Item c:\ImageStaging\Win11Pro_Generic\install.wim
 Write-Host "Windows 11 Pro (Generic) Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 
 
-###############
-## Lenovo G6 ##
-###############
+#########################
+## Lenovo ThinkBook G6 ##
+#########################
 
-Write-Host "Starting Lenovo G6 Image Update" -ForegroundColor white -BackgroundColor blue
+Write-Host "Starting Lenovo ThinkBook G6 Image Update" -ForegroundColor white -BackgroundColor blue
 
 ## -- Mount Image -- ##
-Dism /Mount-Image /ImageFile:C:\ImageStaging\LenovoG6\install.wim /MountDir:C:\ImageStaging\LenovoG6\Mount /Index:5
+Dism /Mount-Image /ImageFile:C:\ImageStaging\LenovoThinkBookG6\install.wim /MountDir:C:\ImageStaging\LenovoThinkBookG6\Mount /Index:5
 
 ## -- Add Drivers -- ##
-Dism /Image:C:\ImageStaging\LenovoG6\Mount /Add-Driver /Driver:C:\Drivers\ThinkBook_16_G6_IRL /Recurse
+Dism /Image:C:\ImageStaging\LenovoThinkBookG6\Mount /Add-Driver /Driver:C:\Drivers\LenovoThinkBookG6 /Recurse
 
 ## -- Unmount WIM and Commit Changes -- ##
-Dism /Unmount-Image /MountDir:C:\ImageStaging\LenovoG6\Mount /Commit
+Dism /Unmount-Image /MountDir:C:\ImageStaging\LenovoThinkBookG6\Mount /Commit
 
 ## -- Convert WIM to ESD -- ##
-Dism /Export-Image /SourceImageFile:C:\ImageStaging\LenovoG6\install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\LenovoG6\Win11_LenovoG6.esd /Compress:recovery /CheckIntegrity
+Dism /Export-Image /SourceImageFile:C:\ImageStaging\LenovoThinkBookG6\install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\LenovoThinkBookG6\Win11_LenovoThinkBookG6.esd /Compress:recovery /CheckIntegrity
 
 ## -- Move ESD to IntePub -- ##
-Move-Item c:\ImageStaging\LenovoG6\Win11_LenovoG6.esd -Destination c:\inetpub\wwwroot\esd\Win11_LenovoG6.esd
-Write-Host "Lenovo G6 Move Successful" -ForegroundColor white -BackgroundColor darkgreen
+Move-Item c:\ImageStaging\LenovoG6\Win11_LenovoThinkBookG6.esd -Destination c:\inetpub\wwwroot\esd\Win11_LenovoThinkBookG6.esd
+Write-Host "Lenovo ThinkBook G6 Move Successful" -ForegroundColor white -BackgroundColor darkgreen
 
 ## -- Remove install.wim -- ##
 Remove-Item c:\ImageStaging\LenovoG6\install.wim
