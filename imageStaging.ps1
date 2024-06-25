@@ -29,32 +29,6 @@ copy-item R:\ImageStaging\install.wim -destination R:\ImageStaging\Win11Pro_Gene
 Write-Host "Install.wim copied successfully!" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
 
-############################################
-## Windows 11 Pro Generic (Untouched ISO) ##
-############################################
-
-Write-Host "Starting Windows 11 Pro Generic Image Update" -ForegroundColor white -BackgroundColor blue
-
-## -- Mount Image -- ##
-Dism /Mount-Image /ImageFile:R:\ImageStaging\Win11Pro_Generic\Install.wim /MountDir:R:\ImageStaging\Win11Pro_Generic\Mount /Index:5
-
-## -- Unmount WIM and Commit Changes -- ##
-Dism /Unmount-Image /MountDir:R:\ImageStaging\Win11Pro_Generic\Mount /Commit
-
-## -- Convert WIM to ESD -- ##
-Dism /Export-Image /SourceImageFile:R:\ImageStaging\Win11Pro_Generic\Install.wim /SourceIndex:5 /DestinationImageFile:R:\ImageStaging\Win11Pro_Generic\Win11Pro_Generic.esd /Compress:recovery /CheckIntegrity
-
-## -- Move ESD to IntePub -- ##
-Move-Item R:\ImageStaging\Win11Pro_Generic\Win11Pro_Generic.esd -Destination c:\inetpub\wwwroot\esd\Win11Pro_Generic.esd
-Write-Host "Windows 11 Pro (Generic) Move Successful" -ForegroundColor white -BackgroundColor darkgreen
-
-## -- Remove install.wim -- ##
-Remove-Item R:\ImageStaging\Win11Pro_Generic\install.wim
-
-# Notify
-Write-Host "Windows 11 Pro (Generic) Update Complete" -ForegroundColor white -BackgroundColor darkgreen
-
-
 #########################
 ## Lenovo ThinkBook G6 ##
 #########################
@@ -169,6 +143,31 @@ Remove-Item R:\ImageStaging\ThinkCentreM70sG3\install.wim
 
 # Notify
 Write-Host "ThinkCentre M70s Update Complete" -ForegroundColor white -BackgroundColor darkgreen
+
+############################################
+## Windows 11 Pro Generic (Untouched ISO) ##
+############################################
+
+Write-Host "Starting Windows 11 Pro Generic Image Update" -ForegroundColor white -BackgroundColor blue
+
+## -- Mount Image -- ##
+Dism /Mount-Image /ImageFile:R:\ImageStaging\Win11Pro_Generic\Install.wim /MountDir:R:\ImageStaging\Win11Pro_Generic\Mount /Index:5
+
+## -- Unmount WIM and Commit Changes -- ##
+Dism /Unmount-Image /MountDir:R:\ImageStaging\Win11Pro_Generic\Mount /Commit
+
+## -- Convert WIM to ESD -- ##
+Dism /Export-Image /SourceImageFile:R:\ImageStaging\Win11Pro_Generic\Install.wim /SourceIndex:5 /DestinationImageFile:R:\ImageStaging\Win11Pro_Generic\Win11Pro_Generic.esd /Compress:recovery /CheckIntegrity
+
+## -- Move ESD to IntePub -- ##
+Move-Item R:\ImageStaging\Win11Pro_Generic\Win11Pro_Generic.esd -Destination c:\inetpub\wwwroot\esd\Win11Pro_Generic.esd
+Write-Host "Windows 11 Pro (Generic) Move Successful" -ForegroundColor white -BackgroundColor darkgreen
+
+## -- Remove install.wim -- ##
+Remove-Item R:\ImageStaging\Win11Pro_Generic\install.wim
+
+# Notify
+Write-Host "Windows 11 Pro (Generic) Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 
 
 ##############################
