@@ -237,6 +237,37 @@ Write-Host ""
 Write-Host "Windows 11 Pro (Generic) Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
 
+############################################
+## Windows 11 Pro Generic (All Drivers) ##
+############################################
+
+Write-Host ""
+Write-Host "************************************************" -ForegroundColor white -BackgroundColor blue
+Write-Host "* Starting Windows 11 All Drivers Image Update *" -ForegroundColor white -BackgroundColor blue
+Write-Host "************************************************" -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+
+## -- Mount Image -- ##
+Dism /Mount-Image /ImageFile:C:\ImageStaging\Win11Pro_AllDrivers\Install.wim /MountDir:C:\ImageStaging\Win11Pro_AllDrivers\Mount /Index:5
+
+## -- Unmount WIM and Commit Changes -- ##
+Dism /Unmount-Image /MountDir:C:\ImageStaging\Win11Pro_AllDrivers\Mount /Commit
+
+## -- Convert WIM to ESD -- ##
+Dism /Export-Image /SourceImageFile:C:\ImageStaging\Win11Pro_AllDrivers\Install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\Win11Pro_Generic\Win11Pro_AllDrivers.esd /Compress:recovery /CheckIntegrity
+
+## -- Move ESD to IntePub -- ##
+Move-Item C:\ImageStaging\Win11Pro_AllDrivers\Win11Pro_AllDrivers.esd -Destination c:\inetpub\wwwroot\esd\Win11Pro_AllDrivers.esd -Force
+Write-Host "Windows 11 Pro (All Drivers) Move Successful" -ForegroundColor white -BackgroundColor darkgreen
+
+## -- Remove install.wim -- ##
+Remove-Item C:\ImageStaging\Win11Pro_AllDrivers\install.wim
+Write-Host ""
+# Notify
+Write-Host "Windows 11 Pro (All Drivers) Update Complete" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host ""
+
+
 ##############################
 ## Notify When All Complete ##
 ##############################
