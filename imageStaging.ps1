@@ -1,17 +1,19 @@
 ### Ortus Windows Image Deployment Script v2 ###
 
 ## Define Variables ##
-# $device1 = "SurfacePro9"
-# $device1_name = "Surface Pro 9"
-# $devuce1_drivers
-# $device2 = "LenovoThinkBookG6"
-# $device2_name = "Lenovo ThinkBook G6"
-# $device3 = "SurfaceGo4"
-# $device3_name = "Surface Go 4"
-# $device4 = "ThinkCentreM70sG3"
-# $device4_name = "Lenovo ThinkCentre M70s G3"
-# $device5 = "Win11Pro_Generic"
-# $device5_name = "Windows 11 Pro (Generic)"
+$device1 = "SurfacePro9"
+$device1_name = "Surface Pro 9"
+$devuce1_drivers
+$device2 = "LenovoThinkBookG6"
+$device2_name = "Lenovo ThinkBook G6"
+$device3 = "SurfaceGo4"
+$device3_name = "Surface Go 4"
+$device4 = "ThinkCentreM70sG3"
+$device4_name = "Lenovo ThinkCentre M70s G3"
+$device5 = "Win11Pro_Generic"
+$device5_name = "Windows 11 Pro (Generic)"
+$device6 = "Win11Pro_AllDrivers"
+$device6_name = "Windows 11 Pro (All Drivers)"
 
 
 ## Startup Script ##
@@ -31,8 +33,8 @@ $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
 # Download the latest Windows 11 ISO from the Microsoft Visual Studio Online portal. 
 # Mount the ISO and extract the install.wim file from the D:\Sources folder and place it in C:\ImageStaging:
 
-Write-Host ""
-Write-Host "Copying install.wim from source..." -ForegroundColor white -BackgroundColor blue
+# Write-Host ""
+# Write-Host "Copying install.wim from source..." -ForegroundColor white -BackgroundColor blue
 Write-Host ""
 copy-item D:\sources\install.wim -destination C:\ImageStaging\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 
