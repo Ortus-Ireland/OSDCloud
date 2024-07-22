@@ -3,7 +3,6 @@
 ## Define Device Variables ##
 $device1 = "SurfacePro9"
 $device1_name = "Surface Pro 9"
-$devuce1_drivers
 $device2 = "LenovoThinkBookG6"
 $device2_name = "Lenovo ThinkBook G6"
 $device3 = "SurfaceGo4"
