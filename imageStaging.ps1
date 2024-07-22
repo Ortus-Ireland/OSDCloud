@@ -28,6 +28,9 @@ Write-Host ""
 Write-Host "Press any key to continue or CTRL+C to cancel..."
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
 
+Write-Host "**********************************************************************************" -ForegroundColor white -BackgroundColor orange
+Write-Host "* Continuing update. If updating fails, use 'DISM /clenup-wim' to clean up files *" -ForegroundColor white -BackgroundColor orange
+Write-Host "**********************************************************************************" -ForegroundColor white -BackgroundColor orange
 
 ## Start Copying WIM from Source ##
 # Download the latest Windows 11 ISO from the Microsoft Visual Studio Online portal. 
