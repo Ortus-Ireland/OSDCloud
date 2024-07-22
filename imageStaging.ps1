@@ -261,7 +261,7 @@ Dism /Mount-Image /ImageFile:C:\ImageStaging\Win11Pro_AllDrivers\Install.wim /Mo
 Dism /Unmount-Image /MountDir:C:\ImageStaging\Win11Pro_AllDrivers\Mount /Commit
 
 ## -- Convert WIM to ESD -- ##
-Dism /Export-Image /SourceImageFile:C:\ImageStaging\Win11Pro_AllDrivers\Install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\Win11Pro_Generic\Win11Pro_AllDrivers.esd /Compress:recovery /CheckIntegrity
+Dism /Export-Image /SourceImageFile:C:\ImageStaging\Win11Pro_AllDrivers\Install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\Win11Pro_AllDrivers\Win11Pro_AllDrivers.esd /Compress:recovery /CheckIntegrity
 
 ## -- Move ESD to IntePub -- ##
 Move-Item C:\ImageStaging\Win11Pro_AllDrivers\Win11Pro_AllDrivers.esd -Destination c:\inetpub\wwwroot\esd\Win11Pro_AllDrivers.esd -Force
