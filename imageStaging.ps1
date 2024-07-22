@@ -201,10 +201,10 @@ Write-Host ""
 Dism /Unmount-Image /MountDir:C:\ImageStaging\ThinkCentreM70sG3\Mount /Commit
 
 ## -- Convert WIM to ESD -- ##
-Dism /Export-Image /SourceImageFile:C:\ImageStaging\ThinkCentreM70sG3\Install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\ThinkCentreM70sG3\ThinkCentreM70sG3.esd /Compress:recovery /CheckIntegrity
+Dism /Export-Image /SourceImageFile:C:\ImageStaging\ThinkCentreM70sG3\Install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\ThinkCentreM70sG3\Win11_ThinkCentreM70sG3.esd /Compress:recovery /CheckIntegrity
 
 ## -- Move ESD to IntePub -- ##
-Move-Item C:\ImageStaging\ThinkCentreM70sG3\ThinkCentreM70sG3.esd -Destination c:\inetpub\wwwroot\esd\ThinkCentreM70sG3.esd -Force
+Move-Item C:\ImageStaging\ThinkCentreM70sG3\Win11_ThinkCentreM70sG3.esd -Destination c:\inetpub\wwwroot\esd\Win11_ThinkCentreM70sG3.esd -Force
 Write-Host "Lenovo ThinkCentre M70s Move Successful" -ForegroundColor white -BackgroundColor darkgreen
 
 ## -- Remove install.wim -- ##
