@@ -1,6 +1,6 @@
 ### Ortus Windows Image Deployment Script v2 ###
 
-## Define Variables ##
+## Define Device Variables ##
 $device1 = "SurfacePro9"
 $device1_name = "Surface Pro 9"
 $devuce1_drivers
@@ -43,11 +43,14 @@ copy-item D:\sources\install.wim -destination C:\ImageStaging\install.wim -PassT
 # dism /Get-WimInfo /WimFile:C:\ImageStaging\install.wim
 
 ### Step 3 (Copy install.wim to device folders)
+### Add more devices in 'Define Variables' above
 copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device1\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device2\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device3\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device4\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false
-copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\Win11Pro_Generic\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
+copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device5\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
+copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device6\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false
+#copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\Win11Pro_Generic\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 
 Write-Host "Install.wim copied successfully!" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
