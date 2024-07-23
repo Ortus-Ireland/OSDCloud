@@ -257,6 +257,9 @@ Write-Host ""
 ## -- Mount Image -- ##
 Dism /Mount-Image /ImageFile:C:\ImageStaging\Win11Pro_AllDrivers\Install.wim /MountDir:C:\ImageStaging\Win11Pro_AllDrivers\Mount /Index:5
 
+## -- Add All Drivers -- ##
+Dism /Image:C:\ImageStaging\Win11Pro_AllDrivers\Mount /Add-Driver /Driver:C:\Drivers /Recurse
+
 ## -- Unmount WIM and Commit Changes -- ##
 Dism /Unmount-Image /MountDir:C:\ImageStaging\Win11Pro_AllDrivers\Mount /Commit
 
