@@ -27,9 +27,9 @@ Write-Host ""
 Write-Host "Press any key to continue or CTRL+C to cancel..."
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
 
-Write-Host "**********************************************************************************" -ForegroundColor white -BackgroundColor orange
-Write-Host "* Continuing update. If updating fails, use 'DISM /clenup-wim' to clean up files *" -ForegroundColor white -BackgroundColor orange
-Write-Host "**********************************************************************************" -ForegroundColor white -BackgroundColor orange
+Write-Host "**********************************************************************************" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host "* Continuing update. If updating fails, use 'DISM /clenup-wim' to clean up files *" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host "**********************************************************************************" -ForegroundColor white -BackgroundColor darkgreen
 
 ## Start Copying WIM from Source ##
 # Download the latest Windows 11 ISO from the Microsoft Visual Studio Online portal. 
@@ -52,7 +52,6 @@ copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device3\inst
 copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device4\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false
 copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device5\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device6\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false
-#copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\Win11Pro_Generic\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 
 Write-Host "Install.wim copied successfully!" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
