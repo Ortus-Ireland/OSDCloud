@@ -1,18 +1,16 @@
 ### Ortus Windows Image Deployment Script v2 ###
 
 ## Define Device Variables ##
-$device1 = "SurfacePro9"
-$device1_name = "Surface Pro 9"
-$device2 = "LenovoThinkBookG6"
-$device2_name = "Lenovo ThinkBook G6"
-$device3 = "SurfaceGo4"
-$device3_name = "Surface Go 4"
-$device4 = "ThinkCentreM70sG3"
-$device4_name = "Lenovo ThinkCentre M70s G3"
-$device5 = "Win11Pro_Generic"
-$device5_name = "Windows 11 Pro (Generic)"
-$device6 = "Win11Pro_AllDrivers"
-$device6_name = "Windows 11 Pro (All Drivers)"
+# These should match the folder names in the deployment directory
+$deviceList = @(
+    "SurfacePro9",
+    "LenovoThinkBookG6",
+    "SurfaceGo4",
+    "ThinkCentreM70sG3",
+    "Win11Pro_Generic",
+    "Win11Pro_AllDrivers",
+    "LenovoThinkBookG7"
+)
 
 
 ## Startup Script ##
@@ -46,12 +44,9 @@ copy-item D:\sources\install.wim -destination C:\ImageStaging\install.wim -PassT
 
 ### Step 3 (Copy install.wim to device folders)
 ### Add more devices in 'Define Variables' above
-copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device1\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
-copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device2\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
-copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device3\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
-copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device4\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false
-copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device5\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
-copy-item C:\ImageStaging\install.wim -destination C:\ImageStaging\$device6\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false
+foreach ($device in $deviceList) {
+    copy-item C:\ImageStaging\install.wim -destination "C:\ImageStaging\$device\install.wim" -PassThru | Set-ItemProperty -name IsReadOnly -Value $false
+}
 
 Write-Host "Install.wim copied successfully!" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
@@ -132,6 +127,46 @@ Remove-Item C:\ImageStaging\LenovoThinkBookG6\install.wim
 # Notify
 Write-Host " "
 Write-Host "Lenovo ThinkBook G6 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
+
+
+#########################
+## Lenovo ThinkBook G7 ##
+#########################
+
+Write-Host ""
+Write-Host "***************************************" -ForegroundColor white -BackgroundColor blue
+Write-Host "* Starting Lenovo ThinkBook G7 Update *" -ForegroundColor white -BackgroundColor blue
+Write-Host "***************************************" -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+
+## -- Mount Image -- ##
+Dism /Mount-Image /ImageFile:C:\ImageStaging\LenovoThinkBookG7\install.wim /MountDir:C:\ImageStaging\LenovoThinkBookG7\Mount /Index:5
+Write-Host ""
+Write-Host "Adding Drivers for Lenovo ThinkBook G7" -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+
+## -- Add Drivers -- ##
+Dism /Image:C:\ImageStaging\LenovoThinkBookG7\Mount /Add-Driver /Driver:C:\Drivers\LenovoThinkBookG7 /Recurse
+Write-Host ""
+Write-Host "Lenovo ThinkBook G7 Drivers Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host ""
+
+## -- Unmount WIM and Commit Changes -- ##
+Dism /Unmount-Image /MountDir:C:\ImageStaging\LenovoThinkBookG7\Mount /Commit
+
+## -- Convert WIM to ESD -- ##
+Dism /Export-Image /SourceImageFile:C:\ImageStaging\LenovoThinkBookG7\install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\LenovoThinkBookG7\Win11_LenovoThinkBookG7.esd /Compress:recovery /CheckIntegrity
+
+## -- Move ESD to IntePub -- ##
+Move-Item C:\ImageStaging\LenovoThinkBookG7\Win11_LenovoThinkBookG7.esd -Destination c:\inetpub\wwwroot\esd\Win11_LenovoThinkBookG7.esd -Force
+Write-Host "Lenovo ThinkBook G7 Move Successful" -ForegroundColor white -BackgroundColor darkgreen
+
+## -- Remove install.wim -- ##
+Remove-Item C:\ImageStaging\LenovoThinkBookG7\install.wim
+
+# Notify
+Write-Host " "
+Write-Host "Lenovo ThinkBook G7 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 
 
 ##################
