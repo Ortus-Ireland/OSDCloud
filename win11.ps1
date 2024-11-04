@@ -164,6 +164,12 @@ Invoke-OSDCloud
 Write-Host "Savings computer name to file"
 Set-Content -Path "C:\osdcloud\computername.txt" -Value $ComputerName
 
+# Output name to C:\temp
+if (-not (Test-Path -Path "C:\temp")) {
+    New-Item -ItemType Directory -Path "C:\temp"
+}
+Set-Content -Path "C:\temp\computername.txt" -Value $ComputerName
+
 Write-Host -ForegroundColor Green "Restarting in 20 seconds!"
 
 Start-Sleep -Seconds 20
