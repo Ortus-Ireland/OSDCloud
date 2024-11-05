@@ -162,7 +162,7 @@ Invoke-OSDCloud
 
 #Restart from WinPE
 Write-Host "Savings computer name to file"
-Set-Content -Path "C:\osdcloud\computername.txt" -Value $ComputerName
+#Set-Content -Path "C:\osdcloud\computername.txt" -Value $ComputerName
 
 # Output name to C:\temp
 if (-not (Test-Path -Path "C:\temp")) {
