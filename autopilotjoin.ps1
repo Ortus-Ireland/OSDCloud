@@ -1,3 +1,4 @@
+Set-executionpolicy bypass -scope process
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 #PowerShell.exe -ExecutionPolicy Bypass
 Install-Script -name Get-WindowsAutopilotInfo -Force
