@@ -16,7 +16,7 @@ function Show-Menu {
     Write-Host "5: Lenovo ThinkBook G6"
     Write-Host "6: Surface Go 4"
     Write-Host "7: Lenovo ThinkCentre M70s G3"
-    Write-Host "8: Lenovo ThinkCentre G7"
+    Write-Host "8: Lenovo ThinkBook G7"
     
 }
 
