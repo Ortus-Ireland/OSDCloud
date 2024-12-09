@@ -21,7 +21,7 @@
 .LINK
     https://www.microsoft.com/en-us/download/confirmation.aspx?id=49117
 #>
-
+Set-executionpolicy bypass -scope process
 function Get-ODTUri {
     <#
         .SYNOPSIS
