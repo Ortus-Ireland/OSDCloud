@@ -17,6 +17,7 @@ function Show-Menu {
     Write-Host "6: Surface Go 4"
     Write-Host "7: Lenovo ThinkCentre M70s G3"
     Write-Host "8: Lenovo ThinkBook G7"
+    Write-Host "9: Surface Pro 10"
     
 }
 
@@ -58,6 +59,10 @@ do
     } '8' {
     write-host 'Using ThinkBook G7 image'
     $CustomImageFile = "http://wds/esd/Win11_LenovoThinkBookG7.esd"
+    $selection = 'q'
+    } '9' {
+    write-host 'Using Surface Pro 10 image'
+    $CustomImageFile = "http://wds/esd/Win11_SurfacePro10.esd"
     $selection = 'q'
     }
     
