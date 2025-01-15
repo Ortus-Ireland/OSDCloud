@@ -9,7 +9,8 @@ $deviceList = @(
     "ThinkCentreM70sG3",
     "Win11Pro_Generic",
     "Win11Pro_AllDrivers",
-    "LenovoThinkBookG7"
+    "LenovoThinkBookG7",
+    "SurfacePro10"
 )
 
 
@@ -88,6 +89,44 @@ Remove-Item C:\ImageStaging\SurfacePro9\install.wim
 # Notify
 Write-Host " "
 Write-Host "Surface Pro 9 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
+
+####################
+## Surface Pro 10 ##
+####################
+Write-Host ""
+Write-Host "***************************************" -ForegroundColor white -BackgroundColor blue
+Write-Host "* Starting Surface Pro 10 Image Update *" -ForegroundColor white -BackgroundColor blue
+Write-Host "***************************************" -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+
+## -- Mount Image -- ##
+Dism /Mount-Image /ImageFile:C:\ImageStaging\SurfacePro10\install.wim /MountDir:C:\ImageStaging\SurfacePro10\Mount /Index:5
+Write-Host ""
+Write-Host "Adding Drivers for Surface Pro 10" -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+
+## -- Add Drivers -- ##
+Dism /Image:C:\ImageStaging\SurfacePro10\Mount /Add-Driver /Driver:C:\Drivers\SurfacePro10 /Recurse
+Write-Host ""
+Write-Host "Surface Pro 10 Drivers Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host ""
+
+## -- Unmount WIM and Commit Changes -- ##
+Dism /Unmount-Image /MountDir:C:\ImageStaging\SurfacePro10\Mount /Commit
+
+## -- Convert WIM to ESD -- ##
+Dism /Export-Image /SourceImageFile:C:\ImageStaging\SurfacePro10\install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\SurfacePro10\Win11_SurfacePro10.esd /Compress:recovery /CheckIntegrity
+
+## -- Move ESD to IntePub -- ##
+Move-Item C:\ImageStaging\SurfacePro10\Win11_SurfacePro10.esd -Destination c:\inetpub\wwwroot\esd\Win11_SurfacePro10.esd -Force
+Write-Host "Surface Pro 10 Move Successful" -ForegroundColor white -BackgroundColor darkgreen
+
+## -- Remove install.wim -- ##
+Remove-Item C:\ImageStaging\SurfacePro10\install.wim
+
+# Notify
+Write-Host " "
+Write-Host "Surface Pro 10 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 
 #########################
 ## Lenovo ThinkBook G6 ##
