@@ -10,7 +10,8 @@ $deviceList = @(
     "Win11Pro_Generic",
     "Win11Pro_AllDrivers",
     "LenovoThinkBookG7",
-    "SurfacePro10"
+    "SurfacePro10",
+    "ThinKCentreM70sG4"
 )
 
 
@@ -278,14 +279,55 @@ Dism /Export-Image /SourceImageFile:C:\ImageStaging\ThinkCentreM70sG3\Install.wi
 
 ## -- Move ESD to IntePub -- ##
 Move-Item C:\ImageStaging\ThinkCentreM70sG3\Win11_ThinkCentreM70sG3.esd -Destination c:\inetpub\wwwroot\esd\Win11_ThinkCentreM70sG3.esd -Force
-Write-Host "Lenovo ThinkCentre M70s Move Successful" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host "Lenovo ThinkCentre M70s G3 Move Successful" -ForegroundColor white -BackgroundColor darkgreen
 
 ## -- Remove install.wim -- ##
 Remove-Item C:\ImageStaging\ThinkCentreM70sG3\install.wim
 
 # Notify
 Write-Host " "
-Write-Host "Lenovo ThinkCentre M70s Update Complete" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host "Lenovo ThinkCentre M70s G3 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
+
+
+################################
+## Lenovo ThinkCentre M70s G4 ##
+################################
+
+Write-Host ""
+Write-Host "***************************************" -ForegroundColor white -BackgroundColor blue
+Write-Host "* Starting ThinkCentre M70s G4 Update *" -ForegroundColor white -BackgroundColor blue
+Write-Host "***************************************" -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+
+## -- Mount Image -- ##
+Dism /Mount-Image /ImageFile:C:\ImageStaging\ThinkCentreM70sG4\Install.wim /MountDir:C:\ImageStaging\ThinkCentreM70sG4\Mount /Index:5
+Write-Host ""
+Write-Host "Adding Drivers for Lenovo ThinkCentre M70s G4" -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+
+## -- Add Drivers -- ##
+Dism /Image:C:\ImageStaging\ThinkCentreM70sG4\Mount /Add-Driver /Driver:C:\Drivers\ThinkCentreM70sG4 /Recurse
+Write-Host ""
+Write-Host "Lenovo ThinkCentre M70s G4 Drivers Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host ""
+
+## -- Unmount WIM and Commit Changes -- ##
+Dism /Unmount-Image /MountDir:C:\ImageStaging\ThinkCentreM70sG4\Mount /Commit
+
+## -- Convert WIM to ESD -- ##
+Dism /Export-Image /SourceImageFile:C:\ImageStaging\ThinkCentreM70sG4\Install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\ThinkCentreM70sG4\Win11_ThinkCentreM70sG4.esd /Compress:recovery /CheckIntegrity
+
+## -- Move ESD to IntePub -- ##
+Move-Item C:\ImageStaging\ThinkCentreM70sG4\Win11_ThinkCentreM70sG4.esd -Destination c:\inetpub\wwwroot\esd\Win11_ThinkCentreM70sG4.esd -Force
+Write-Host "Lenovo ThinkCentre M70s G4 Move Successful" -ForegroundColor white -BackgroundColor darkgreen
+
+## -- Remove install.wim -- ##
+Remove-Item C:\ImageStaging\ThinkCentreM70sG4\install.wim
+
+# Notify
+Write-Host " "
+Write-Host "Lenovo ThinkCentre M70s G4 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
+
 
 ############################################
 ## Windows 11 Pro Generic (Untouched ISO) ##
