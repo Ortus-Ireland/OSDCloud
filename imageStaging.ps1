@@ -11,7 +11,7 @@ $deviceList = @(
     "Win11Pro_AllDrivers",
     "LenovoThinkBookG7",
     "SurfacePro10",
-    "ThinKCentreM70sG4"
+    "ThinkCentreM70sG4"
 )
 
 
