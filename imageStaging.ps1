@@ -11,7 +11,8 @@ $deviceList = @(
     "Win11Pro_AllDrivers",
     "LenovoThinkBookG7",
     "SurfacePro10",
-    "ThinkCentreM70sG4"
+    "ThinkCentreM70sG4",
+    "SurfacePro11Business"
 )
 
 
@@ -327,6 +328,46 @@ Remove-Item C:\ImageStaging\ThinkCentreM70sG4\install.wim
 # Notify
 Write-Host " "
 Write-Host "Lenovo ThinkCentre M70s G4 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
+
+
+#################################
+## Surface Pro 11 for Business ##
+#################################
+
+Write-Host ""
+Write-Host "***********************************************" -ForegroundColor white -BackgroundColor blue
+Write-Host "* Starting Surface Pro 11 for Business Update *" -ForegroundColor white -BackgroundColor blue
+Write-Host "***********************************************" -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+
+## -- Mount Image -- ##
+Dism /Mount-Image /ImageFile:C:\ImageStaging\SurfacePro11Business\Install.wim /MountDir:C:\ImageStaging\SurfacePro11Business\Mount /Index:5
+Write-Host ""
+Write-Host "Adding Drivers for Surface Pro 11" -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+
+## -- Add Drivers -- ##
+Dism /Image:C:\ImageStaging\SurfacePro11Business\Mount /Add-Driver /Driver:C:\Drivers\SurfacePro11Business /Recurse
+Write-Host ""
+Write-Host "Surface Pro 11 Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host ""
+
+## -- Unmount WIM and Commit Changes -- ##
+Dism /Unmount-Image /MountDir:C:\ImageStaging\SurfacePro11Business\Mount /Commit
+
+## -- Convert WIM to ESD -- ##
+Dism /Export-Image /SourceImageFile:C:\ImageStaging\SurfacePro11Business\Install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\SurfacePro11Business\Win11_SurfacePro11Business.esd /Compress:recovery /CheckIntegrity
+
+## -- Move ESD to IntePub -- ##
+Move-Item C:\ImageStaging\SurfacePro11Business\Win11_SurfacePro11Business.esd -Destination c:\inetpub\wwwroot\esd\Win11_SurfacePro11Business.esd -Force
+Write-Host "Surface Pro 11 for Business Move Successful" -ForegroundColor white -BackgroundColor darkgreen
+
+## -- Remove install.wim -- ##
+Remove-Item C:\ImageStaging\SurfacePro11Business\install.wim
+
+# Notify
+Write-Host " "
+Write-Host "Surface Pro 11 for Business Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 
 
 ############################################
