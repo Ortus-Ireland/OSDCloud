@@ -70,7 +70,7 @@ do
     write-host 'Using ThinkCentre M70s G4 image'
     $CustomImageFile = "http://wds/esd/Win11_ThinkCentreM70sG4.esd"
     $selection = 'q'
-    }
+    } '11' {
     write-host 'Using Surface Pro 11 for Business image'
     $CustomImageFile = "http://wds/esd/Win11_SurfacePro11Business.esd"
     $selection = 'q'
