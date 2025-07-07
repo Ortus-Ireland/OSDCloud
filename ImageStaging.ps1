@@ -68,6 +68,16 @@ Write-Host ""
 ## Device Processing Loop ##
 ############################
 
+Write-Host ""
+Write-Host "***********************************" -ForegroundColor white -BackgroundColor yellow
+Write-Host "* Starting Device Processing Loop *" -ForegroundColor white -BackgroundColor yellow
+Write-Host "***********************************" -ForegroundColor white -BackgroundColor yellow
+Write-Host ""
+Write-Host "Total devices to process: $totalDevices" -ForegroundColor white -BackgroundColor blue
+Write-Host "Progress will be shown for each device and overall completion." -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+
+
 $totalDevices = $deviceList.Count
 $currentDevice = 0
 
