@@ -1,4 +1,4 @@
-### Ortus Windows Image Deployment Script v2 ###
+### Ortus Windows Image Deployment Script v3.1 ###
 
 # Customize Write-Progress colors
 $Host.PrivateData.ProgressBackgroundColor = 'DarkGreen'
@@ -44,7 +44,7 @@ Write-Host "********************************************************************
 Write-Host ""
 Write-Host "Copying install.wim from source..." -ForegroundColor white -BackgroundColor blue
 Write-Host ""
-copy-item D:\sources\install.wim -destination C:\ImageStaging\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
+copy-item "D:\sources\install.wim" -destination "C:\ImageStaging\install.wim" -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 
 ### Step 2 (Optional)
 # Check the index of the WIM file using the following command (if it's not the default of 5, make a note of it):
@@ -83,18 +83,11 @@ foreach ($device in $deviceList) {
 }
 
 Write-Progress -Activity "Copying install.wim to device folders" -Completed
-Write-Host "Install.wim copied successfully!" -ForegroundColor white -BackgroundColor darkgreen
-Write-Host ""
+Clear-Host
 
 $totalDevices = $deviceList.Count
 $currentDevice = 0
 
-# Clear console before starting device processing
-Clear-Host
-Write-Host "Starting device processing..." -ForegroundColor white -BackgroundColor blue
-Write-Host "Total devices to process: $totalDevices" -ForegroundColor white -BackgroundColor blue
-Write-Host ""
-Clear-Host
 
 foreach ($device in $deviceList) {
     $currentDevice++
@@ -102,6 +95,7 @@ foreach ($device in $deviceList) {
     
     # Use Write-Information for less critical messages during progress
     Write-Information "Starting $device Image Update" -InformationAction Continue
+    Clear-Host
 
     $currentTask = 0
     
