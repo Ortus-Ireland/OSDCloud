@@ -56,9 +56,9 @@ $totalDevices = $deviceList.Count
 $currentDevice = 0
 
 # Clear the console before starting progress to ensure clean display
-Clear-Host
-Write-Host "Starting file copy operations..." -ForegroundColor white -BackgroundColor blue
-Write-Host ""
+# Clear-Host
+# Write-Host "Starting file copy operations..." -ForegroundColor white -BackgroundColor blue
+# Write-Host ""
 Clear-Host
 
 # Define tasks for each device
@@ -104,47 +104,54 @@ foreach ($device in $deviceList) {
 
     $currentTask = 0
     
+    # Main progress bar for device processing
+    Write-Progress -Id 0 -Activity "Processing Device Images" -Status "Device $currentDevice of $totalDevices - $device" -PercentComplete $devicePercentComplete
+    
     ## -- Mount Image -- ##
     $currentTask++
     $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
-    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices - $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks - Mounting image for $device"
+    Write-Progress -Id 1 -ParentId 0 -Activity "Current Task Progress" -Status "Mounting image for $device" -PercentComplete $taskPercentComplete -CurrentOperation "Task $currentTask of $totalTasks - Mount Image"
     Dism /Mount-Image /ImageFile:"C:\ImageStaging\$device\install.wim" /MountDir:"C:\ImageStaging\$device\Mount" /Index:5 | Out-Null
     
     ## -- Add Drivers -- ##
     $currentTask++
     $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
-    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices - $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks - Adding drivers for $device"
+    Write-Progress -Id 1 -ParentId 0 -Activity "Current Task Progress" -Status "Adding drivers for $device" -PercentComplete $taskPercentComplete -CurrentOperation "Task $currentTask of $totalTasks - Add Drivers"
     Dism /Image:"C:\ImageStaging\$device\Mount" /Add-Driver /Driver:"C:\Drivers\$device" /Recurse | Out-Null
     
     ## -- Unmount WIM and Commit Changes -- ##
     $currentTask++
     $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
-    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices - $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks - Unmounting and committing changes for $device"
+    Write-Progress -Id 1 -ParentId 0 -Activity "Current Task Progress" -Status "Unmounting and committing changes for $device" -PercentComplete $taskPercentComplete -CurrentOperation "Task $currentTask of $totalTasks - Unmount and Commit"
     Dism /Unmount-Image /MountDir:"C:\ImageStaging\$device\Mount" /Commit | Out-Null
 
     ## -- Convert WIM to ESD -- ##
     $currentTask++
     $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
-    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices - $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks - Converting WIM to ESD for $device"
+    Write-Progress -Id 1 -ParentId 0 -Activity "Current Task Progress" -Status "Converting WIM to ESD for $device" -PercentComplete $taskPercentComplete -CurrentOperation "Task $currentTask of $totalTasks - Convert to ESD"
     Dism /Export-Image /SourceImageFile:"C:\ImageStaging\$device\install.wim" /SourceIndex:5 /DestinationImageFile:"C:\ImageStaging\$device\Win11_$device.esd" /Compress:recovery /CheckIntegrity | Out-Null
 
     ## -- Move ESD to InetPub -- ##
     $currentTask++
     $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
-    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices - $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks - Moving ESD file for $device"
+    Write-Progress -Id 1 -ParentId 0 -Activity "Current Task Progress" -Status "Moving ESD file for $device" -PercentComplete $taskPercentComplete -CurrentOperation "Task $currentTask of $totalTasks - Move to OSDCloud"
     Move-Item "C:\ImageStaging\$device\Win11_$device.esd" -Destination "c:\inetpub\wwwroot\esd\Win11_$device.esd" -Force
 
     ## -- Remove install.wim -- ##
     $currentTask++
     $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
-    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices - $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks - Cleaning up install.wim for $device"
+    Write-Progress -Id 1 -ParentId 0 -Activity "Current Task Progress" -Status "Cleaning up install.wim for $device" -PercentComplete $taskPercentComplete -CurrentOperation "Task $currentTask of $totalTasks - Cleanup"
     Remove-Item "C:\ImageStaging\$device\install.wim"
 
+    # Complete the task progress bar for this device
+    Write-Progress -Id 1 -ParentId 0 -Activity "Current Task Progress" -Status "All tasks completed for $device" -PercentComplete 100 -CurrentOperation "Device processing complete"
+    
     # Show completion for this device
     Write-Information "$device Update Complete" -InformationAction Continue
 }
 
-Write-Progress -Activity "Processing device images" -Completed
+Write-Progress -Id 0 -Activity "Processing Device Images" -Completed
+Write-Progress -Id 1 -Activity "Current Task Progress" -Completed
 
 
 ##############################
