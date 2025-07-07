@@ -79,7 +79,8 @@ do
     write-host 'Using ThinkCentre Neo 50Q G4 image'
     $CustomImageFile = "http://wds/esd/Win11_ThinkCentreNeo50QG4.esd"
     $selection = 'q'
-    }    
+    }
+    } 
  }
  until ($selection -eq 'q')
 
