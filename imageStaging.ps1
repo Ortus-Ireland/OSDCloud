@@ -12,7 +12,8 @@ $deviceList = @(
     "LenovoThinkBookG7",
     "SurfacePro10",
     "ThinkCentreM70sG4",
-    "SurfacePro11Business"
+    "SurfacePro11Business",
+    "ThinkCentreNeo50QG4"
 )
 
 
@@ -368,6 +369,46 @@ Remove-Item C:\ImageStaging\SurfacePro11Business\install.wim
 # Notify
 Write-Host " "
 Write-Host "Surface Pro 11 for Business Update Complete" -ForegroundColor white -BackgroundColor darkgreen
+
+
+############################
+## ThinkCentre Neo 50Q G4 ##
+############################
+
+Write-Host ""
+Write-Host "******************************************" -ForegroundColor white -BackgroundColor blue
+Write-Host "* Starting ThinkCentre Neo 50Q G4 Update *" -ForegroundColor white -BackgroundColor blue
+Write-Host "******************************************" -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+
+## -- Mount Image -- ##
+Dism /Mount-Image /ImageFile:C:\ImageStaging\ThinkCentreNeo50QG4\Install.wim /MountDir:C:\ImageStaging\ThinkCentreNeo50QG4\Mount /Index:5
+Write-Host ""
+Write-Host "Adding Drivers for ThinkCentre Neo 50Q G4" -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+
+## -- Add Drivers -- ##
+Dism /Image:C:\ImageStaging\ThinkCentreNeo50QG4\Mount /Add-Driver /Driver:C:\Drivers\ThinkCentreNeo50QG4 /Recurse
+Write-Host ""
+Write-Host "ThinkCentre Neo 50Q G4 Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host ""
+
+## -- Unmount WIM and Commit Changes -- ##
+Dism /Unmount-Image /MountDir:C:\ImageStaging\ThinkCentreNeo50QG4\Mount /Commit
+
+## -- Convert WIM to ESD -- ##
+Dism /Export-Image /SourceImageFile:C:\ImageStaging\ThinkCentreNeo50QG4\Install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\ThinkCentreNeo50QG4\Win11_ThinkCentreNeo50QG4.esd /Compress:recovery /CheckIntegrity
+
+## -- Move ESD to IntePub -- ##
+Move-Item C:\ImageStaging\ThinkCentreNeo50QG4\Win11_ThinkCentreNeo50QG4.esd -Destination c:\inetpub\wwwroot\esd\Win11_ThinkCentreNeo50QG4.esd -Force
+Write-Host "ThinkCentre Neo 50Q G4 for Business Move Successful" -ForegroundColor white -BackgroundColor darkgreen
+
+## -- Remove install.wim -- ##
+Remove-Item C:\ImageStaging\ThinkCentreNeo50QG4\install.wim
+
+# Notify
+Write-Host " "
+Write-Host "ThinkCentre Neo 50Q G4 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 
 
 ############################################
