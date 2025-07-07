@@ -60,8 +60,7 @@ foreach ($device in $deviceList) {
     $currentDevice++
     $percentComplete = [math]::Round(($currentDevice / $totalDevices) * 100, 1)
     
-    Write-Progress -Activity "Copying install.wim to device folders" -Status "Processing $device ($currentDevice of $totalDevices)" -PercentComplete $percentComplete -CurrentOperation "Copying to $device"
-    
+    Write-Progress -Activity "Copying install.wim to device folders" -Status "Processing $device ($currentDevice of $totalDevices)" -PercentComplete $percentComplete -CurrentOperation "Copying to $device" -ForegroundColor Yellow -BackgroundColor DarkGreen
     # Suppress output from copy-item to prevent console clutter
     copy-item C:\ImageStaging\install.wim -destination "C:\ImageStaging\$device\install.wim" -PassThru | Set-ItemProperty -name IsReadOnly -Value $false | Out-Null
 }
