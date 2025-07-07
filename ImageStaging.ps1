@@ -1,8 +1,8 @@
 ### Ortus Windows Image Deployment Script v2 ###
 
 # Customize Write-Progress colors
-$Host.PrivateData.ProgressBackgroundColor = 'DarkGreen'
-$Host.PrivateData.ProgressForegroundColor = 'Yellow'
+$Host.PrivateData.ProgressBackgroundColor = 'DarkRed'
+$Host.PrivateData.ProgressForegroundColor = 'White'
 
 ## Define Device Variables ##
 # These should match the folder names in the deployment directory
