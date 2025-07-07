@@ -1,5 +1,9 @@
 ### Ortus Windows Image Deployment Script v2 ###
 
+# Customize Write-Progress colors
+$Host.PrivateData.ProgressBackgroundColor = 'DarkGreen'
+$Host.PrivateData.ProgressForegroundColor = 'Yellow'
+
 ## Define Device Variables ##
 # These should match the folder names in the deployment directory
 $deviceList = @(
@@ -16,9 +20,6 @@ $deviceList = @(
 #    "ThinkCentreNeo50QG4"
 )
 
-# Customize Write-Progress colors
-$Host.PrivateData.ProgressBackgroundColor = 'DarkGreen'
-$Host.PrivateData.ProgressForegroundColor = 'Yellow'
 
 ## Startup Script ##
 
@@ -40,8 +41,8 @@ Write-Host "********************************************************************
 # Download the latest Windows 11 ISO from the Microsoft Visual Studio Online portal. 
 # Mount the ISO and extract the install.wim file from the D:\Sources folder and place it in C:\ImageStaging:
 
-# Write-Host ""
-# Write-Host "Copying install.wim from source..." -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+Write-Host "Copying install.wim from source..." -ForegroundColor white -BackgroundColor blue
 Write-Host ""
 copy-item D:\sources\install.wim -destination C:\ImageStaging\install.wim -PassThru | Set-ItemProperty -name IsReadOnly -Value $false 
 
@@ -54,77 +55,93 @@ copy-item D:\sources\install.wim -destination C:\ImageStaging\install.wim -PassT
 $totalDevices = $deviceList.Count
 $currentDevice = 0
 
+# Clear the console before starting progress to ensure clean display
+Clear-Host
+Write-Host "Starting file copy operations..." -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+Clear-Host
+
+# Define tasks for each device
+$deviceTasks = @(
+    "Mount Image",
+    "Add Drivers", 
+    "Unmount and Commit",
+    "Convert to ESD",
+    "Move to OSDCloud",
+    "Cleanup"
+)
+$totalTasks = $deviceTasks.Count
+
 foreach ($device in $deviceList) {
     $currentDevice++
-    $percentComplete = [math]::Round(($currentDevice / $totalDevices) * 100, 1)
+    $devicePercentComplete = [math]::Round(($currentDevice / $totalDevices) * 100, 1)
     
-    Write-Progress -Activity "Copying install.wim to device folders" -Status "Processing $device ($currentDevice of $totalDevices)" -PercentComplete $percentComplete -CurrentOperation "Copying to $device"
+    Write-Progress -Activity "Copying install.wim to device folders" -Status "Processing $device ($currentDevice of $totalDevices)" -PercentComplete $devicePercentComplete -CurrentOperation "Copying to $device"
     
-    copy-item C:\ImageStaging\install.wim -destination "C:\ImageStaging\$device\install.wim" -PassThru | Set-ItemProperty -name IsReadOnly -Value $false
+    # Suppress output from copy-item to prevent console clutter
+    copy-item C:\ImageStaging\install.wim -destination "C:\ImageStaging\$device\install.wim" -PassThru | Set-ItemProperty -name IsReadOnly -Value $false | Out-Null
 }
 
 Write-Progress -Activity "Copying install.wim to device folders" -Completed
 Write-Host "Install.wim copied successfully!" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
 
-############################
-## Device Processing Loop ##
-############################
-
-Write-Host ""
-Write-Host "***********************************" -ForegroundColor white -BackgroundColor blue
-Write-Host "* Starting Device Processing Loop *" -ForegroundColor white -BackgroundColor blue
-Write-Host "***********************************" -ForegroundColor white -BackgroundColor blue
-Write-Host ""
-Write-Host "Total devices to process: $totalDevices" -ForegroundColor white -BackgroundColor blue
-Write-Host "Progress will be shown for each device and overall completion." -ForegroundColor white -BackgroundColor blue
-Write-Host ""
-
-
 $totalDevices = $deviceList.Count
 $currentDevice = 0
 
+# Clear console before starting device processing
+Clear-Host
+Write-Host "Starting device processing..." -ForegroundColor white -BackgroundColor blue
+Write-Host "Total devices to process: $totalDevices" -ForegroundColor white -BackgroundColor blue
+Write-Host ""
+
 foreach ($device in $deviceList) {
     $currentDevice++
-    $percentComplete = [math]::Round(($currentDevice / $totalDevices) * 100, 1)
+    $devicePercentComplete = [math]::Round(($currentDevice / $totalDevices) * 100, 1)
     
-    Write-Progress -Activity "Processing device images" -Status "Processing $device ($currentDevice of $totalDevices)" -PercentComplete $percentComplete -CurrentOperation "Updating $device"
-    
-    Write-Host ""
-    Write-Host "***************************************" -ForegroundColor white -BackgroundColor blue
-    Write-Host "* Starting $device Image Update *" -ForegroundColor white -BackgroundColor blue
-    Write-Host "***************************************" -ForegroundColor white -BackgroundColor blue
-    Write-Host ""
+    # Use Write-Information for less critical messages during progress
+    Write-Information "Starting $device Image Update" -InformationAction Continue
 
+    $currentTask = 0
+    
     ## -- Mount Image -- ##
-    Dism /Mount-Image /ImageFile:"C:\ImageStaging\$device\install.wim" /MountDir:"C:\ImageStaging\$device\Mount" /Index:5
-    Write-Host ""
-    Write-Host "Adding Drivers for $device" -ForegroundColor white -BackgroundColor blue
-    Write-Host ""
-
+    $currentTask++
+    $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
+    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices: $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks: Mounting image for $device"
+    Dism /Mount-Image /ImageFile:"C:\ImageStaging\$device\install.wim" /MountDir:"C:\ImageStaging\$device\Mount" /Index:5 | Out-Null
+    
     ## -- Add Drivers -- ##
-    Dism /Image:"C:\ImageStaging\$device\Mount" /Add-Driver /Driver:"C:\Drivers\$device" /Recurse
-    Write-Host ""
-    Write-Host "$device Drivers Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
-    Write-Host ""
-
+    $currentTask++
+    $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
+    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices: $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks: Adding drivers for $device"
+    Dism /Image:"C:\ImageStaging\$device\Mount" /Add-Driver /Driver:"C:\Drivers\$device" /Recurse | Out-Null
+    
     ## -- Unmount WIM and Commit Changes -- ##
-    Dism /Unmount-Image /MountDir:"C:\ImageStaging\$device\Mount" /Commit
+    $currentTask++
+    $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
+    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices: $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks: Unmounting and committing changes for $device"
+    Dism /Unmount-Image /MountDir:"C:\ImageStaging\$device\Mount" /Commit | Out-Null
 
     ## -- Convert WIM to ESD -- ##
-    Dism /Export-Image /SourceImageFile:"C:\ImageStaging\$device\install.wim" /SourceIndex:5 /DestinationImageFile:"C:\ImageStaging\$device\Win11_$device.esd" /Compress:recovery /CheckIntegrity
+    $currentTask++
+    $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
+    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices: $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks: Converting WIM to ESD for $device"
+    Dism /Export-Image /SourceImageFile:"C:\ImageStaging\$device\install.wim" /SourceIndex:5 /DestinationImageFile:"C:\ImageStaging\$device\Win11_$device.esd" /Compress:recovery /CheckIntegrity | Out-Null
 
     ## -- Move ESD to InetPub -- ##
+    $currentTask++
+    $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
+    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices: $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks: Moving ESD file for $device"
     Move-Item "C:\ImageStaging\$device\Win11_$device.esd" -Destination "c:\inetpub\wwwroot\esd\Win11_$device.esd" -Force
-    Write-Host "$device Move Successful" -ForegroundColor white -BackgroundColor darkgreen
 
     ## -- Remove install.wim -- ##
+    $currentTask++
+    $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
+    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices: $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks: Cleaning up install.wim for $device"
     Remove-Item "C:\ImageStaging\$device\install.wim"
 
-    # Notify
-    Write-Host " "
-    Write-Host "$device Update Complete" -ForegroundColor white -BackgroundColor darkgreen
-    Write-Host ""
+    # Show completion for this device
+    Write-Information "$device Update Complete" -InformationAction Continue
 }
 
 Write-Progress -Activity "Processing device images" -Completed
