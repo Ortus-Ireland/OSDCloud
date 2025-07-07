@@ -1,8 +1,8 @@
 ### Ortus Windows Image Deployment Script v2 ###
 
 # Customize Write-Progress colors
-$Host.PrivateData.ProgressBackgroundColor = 'DarkRed'
-$Host.PrivateData.ProgressForegroundColor = 'White'
+$Host.PrivateData.ProgressBackgroundColor = 'DarkGreen'
+$Host.PrivateData.ProgressForegroundColor = 'Yellow'
 
 ## Define Device Variables ##
 # These should match the folder names in the deployment directory
@@ -59,12 +59,24 @@ $currentDevice = 0
 Clear-Host
 Write-Host "Starting file copy operations..." -ForegroundColor white -BackgroundColor blue
 Write-Host ""
+Clear-Host
+
+# Define tasks for each device
+$deviceTasks = @(
+    "Mount Image",
+    "Add Drivers", 
+    "Unmount and Commit",
+    "Convert to ESD",
+    "Move to OSDCloud",
+    "Cleanup"
+)
+$totalTasks = $deviceTasks.Count
 
 foreach ($device in $deviceList) {
     $currentDevice++
-    $percentComplete = [math]::Round(($currentDevice / $totalDevices) * 100, 1)
+    $devicePercentComplete = [math]::Round(($currentDevice / $totalDevices) * 100, 1)
     
-    Write-Progress -Activity "Copying install.wim to device folders" -Status "Processing $device ($currentDevice of $totalDevices)" -PercentComplete $percentComplete -CurrentOperation "Copying to $device"
+    Write-Progress -Activity "Copying install.wim to device folders" -Status "Processing $device ($currentDevice of $totalDevices)" -PercentComplete $devicePercentComplete -CurrentOperation "Copying to $device"
     
     # Suppress output from copy-item to prevent console clutter
     copy-item C:\ImageStaging\install.wim -destination "C:\ImageStaging\$device\install.wim" -PassThru | Set-ItemProperty -name IsReadOnly -Value $false | Out-Null
@@ -85,34 +97,47 @@ Write-Host ""
 
 foreach ($device in $deviceList) {
     $currentDevice++
-    $percentComplete = [math]::Round(($currentDevice / $totalDevices) * 100, 1)
-    
-    Write-Progress -Activity "Processing device images" -Status "Processing $device ($currentDevice of $totalDevices)" -PercentComplete $percentComplete -CurrentOperation "Updating $device"
+    $devicePercentComplete = [math]::Round(($currentDevice / $totalDevices) * 100, 1)
     
     # Use Write-Information for less critical messages during progress
     Write-Information "Starting $device Image Update" -InformationAction Continue
 
+    $currentTask = 0
+    
     ## -- Mount Image -- ##
-    Write-Progress -Activity "Processing device images" -Status "Processing $device ($currentDevice of $totalDevices)" -PercentComplete $percentComplete -CurrentOperation "Mounting image for $device"
+    $currentTask++
+    $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
+    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices: $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks: Mounting image for $device"
     Dism /Mount-Image /ImageFile:"C:\ImageStaging\$device\install.wim" /MountDir:"C:\ImageStaging\$device\Mount" /Index:5 | Out-Null
     
     ## -- Add Drivers -- ##
-    Write-Progress -Activity "Processing device images" -Status "Processing $device ($currentDevice of $totalDevices)" -PercentComplete $percentComplete -CurrentOperation "Adding drivers for $device"
+    $currentTask++
+    $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
+    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices: $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks: Adding drivers for $device"
     Dism /Image:"C:\ImageStaging\$device\Mount" /Add-Driver /Driver:"C:\Drivers\$device" /Recurse | Out-Null
     
     ## -- Unmount WIM and Commit Changes -- ##
-    Write-Progress -Activity "Processing device images" -Status "Processing $device ($currentDevice of $totalDevices)" -PercentComplete $percentComplete -CurrentOperation "Unmounting and committing changes for $device"
+    $currentTask++
+    $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
+    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices: $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks: Unmounting and committing changes for $device"
     Dism /Unmount-Image /MountDir:"C:\ImageStaging\$device\Mount" /Commit | Out-Null
 
     ## -- Convert WIM to ESD -- ##
-    Write-Progress -Activity "Processing device images" -Status "Processing $device ($currentDevice of $totalDevices)" -PercentComplete $percentComplete -CurrentOperation "Converting WIM to ESD for $device"
+    $currentTask++
+    $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
+    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices: $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks: Converting WIM to ESD for $device"
     Dism /Export-Image /SourceImageFile:"C:\ImageStaging\$device\install.wim" /SourceIndex:5 /DestinationImageFile:"C:\ImageStaging\$device\Win11_$device.esd" /Compress:recovery /CheckIntegrity | Out-Null
 
     ## -- Move ESD to InetPub -- ##
-    Write-Progress -Activity "Processing device images" -Status "Processing $device ($currentDevice of $totalDevices)" -PercentComplete $percentComplete -CurrentOperation "Moving ESD file for $device"
+    $currentTask++
+    $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
+    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices: $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks: Moving ESD file for $device"
     Move-Item "C:\ImageStaging\$device\Win11_$device.esd" -Destination "c:\inetpub\wwwroot\esd\Win11_$device.esd" -Force
 
     ## -- Remove install.wim -- ##
+    $currentTask++
+    $taskPercentComplete = [math]::Round(($currentTask / $totalTasks) * 100, 1)
+    Write-Progress -Activity "Processing device images" -Status "Device $currentDevice of $totalDevices: $device" -PercentComplete $devicePercentComplete -CurrentOperation "Task $currentTask of $totalTasks: Cleaning up install.wim for $device"
     Remove-Item "C:\ImageStaging\$device\install.wim"
 
     # Show completion for this device
