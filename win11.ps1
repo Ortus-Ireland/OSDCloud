@@ -13,7 +13,7 @@ function Show-Menu {
     Write-Host "2: Windows 11 Pro (All Drivers)"
     Write-Host "3: Windows 10 Pro (Generic)"
     Write-Host "4: Surface Pro 9"
-    Write-Host "5: Lenovo ThinkBook G6"
+    Write-Host "5: Lenovo ThinkBook G8"
     Write-Host "6: Surface Go 4"
     Write-Host "7: Lenovo ThinkCentre M70s G3"
     Write-Host "8: Lenovo ThinkBook G7"
@@ -48,8 +48,8 @@ do
     $CustomImageFile = "http://wds/esd/Win11_SurfacePro9.esd"
     $selection = 'q'
     } '5' {
-    write-host 'Using Lenovo ThinkBook G6 image'
-    $CustomImageFile = "http://wds/esd/Win11_LenovoThinkBookG6.esd"
+    write-host 'Using Lenovo ThinkBook G8 image'
+    $CustomImageFile = "http://wds/esd/Win11_LenovoThinkBookG8.esd"
     $selection = 'q'
     } '6' {
     write-host 'Using Surface Go 4 image'
