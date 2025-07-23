@@ -4,7 +4,7 @@
 # These should match the folder names in the deployment directory
 $deviceList = @(
     "SurfacePro9",
-    "LenovoThinkBookG6",
+    "LenovoThinkBookG8",
     "SurfaceGo4",
     "ThinkCentreM70sG3",
     "Win11Pro_Generic",
@@ -132,43 +132,43 @@ Write-Host " "
 Write-Host "Surface Pro 10 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 
 #########################
-## Lenovo ThinkBook G6 ##
+## Lenovo ThinkBook G8 ##
 #########################
 
 Write-Host ""
 Write-Host "***************************************" -ForegroundColor white -BackgroundColor blue
-Write-Host "* Starting Lenovo ThinkBook G6 Update *" -ForegroundColor white -BackgroundColor blue
+Write-Host "* Starting Lenovo ThinkBook G8 Update *" -ForegroundColor white -BackgroundColor blue
 Write-Host "***************************************" -ForegroundColor white -BackgroundColor blue
 Write-Host ""
 
 ## -- Mount Image -- ##
-Dism /Mount-Image /ImageFile:C:\ImageStaging\LenovoThinkBookG6\install.wim /MountDir:C:\ImageStaging\LenovoThinkBookG6\Mount /Index:5
+Dism /Mount-Image /ImageFile:C:\ImageStaging\LenovoThinkBookG8\install.wim /MountDir:C:\ImageStaging\LenovoThinkBookG8\Mount /Index:5
 Write-Host ""
-Write-Host "Adding Drivers for Lenovo ThinkBook G6" -ForegroundColor white -BackgroundColor blue
+Write-Host "Adding Drivers for Lenovo ThinkBook G8" -ForegroundColor white -BackgroundColor blue
 Write-Host ""
 
 ## -- Add Drivers -- ##
-Dism /Image:C:\ImageStaging\LenovoThinkBookG6\Mount /Add-Driver /Driver:C:\Drivers\LenovoThinkBookG6 /Recurse
+Dism /Image:C:\ImageStaging\LenovoThinkBookG8\Mount /Add-Driver /Driver:C:\Drivers\LenovoThinkBookG8 /Recurse
 Write-Host ""
-Write-Host "Lenovo ThinkBook G6 Drivers Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host "Lenovo ThinkBook G8 Drivers Added Successfully" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
 
 ## -- Unmount WIM and Commit Changes -- ##
-Dism /Unmount-Image /MountDir:C:\ImageStaging\LenovoThinkBookG6\Mount /Commit
+Dism /Unmount-Image /MountDir:C:\ImageStaging\LenovoThinkBookG8\Mount /Commit
 
 ## -- Convert WIM to ESD -- ##
-Dism /Export-Image /SourceImageFile:C:\ImageStaging\LenovoThinkBookG6\install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\LenovoThinkBookG6\Win11_LenovoThinkBookG6.esd /Compress:recovery /CheckIntegrity
+Dism /Export-Image /SourceImageFile:C:\ImageStaging\LenovoThinkBookG8\install.wim /SourceIndex:5 /DestinationImageFile:C:\ImageStaging\LenovoThinkBookG8\Win11_LenovoThinkBookG8.esd /Compress:recovery /CheckIntegrity
 
 ## -- Move ESD to IntePub -- ##
-Move-Item C:\ImageStaging\LenovoThinkBookG6\Win11_LenovoThinkBookG6.esd -Destination c:\inetpub\wwwroot\esd\Win11_LenovoThinkBookG6.esd -Force
-Write-Host "Lenovo ThinkBook G6 Move Successful" -ForegroundColor white -BackgroundColor darkgreen
+Move-Item C:\ImageStaging\LenovoThinkBookG8\Win11_LenovoThinkBookG8.esd -Destination c:\inetpub\wwwroot\esd\Win11_LenovoThinkBookG8.esd -Force
+Write-Host "Lenovo ThinkBook G8 Move Successful" -ForegroundColor white -BackgroundColor darkgreen
 
 ## -- Remove install.wim -- ##
-Remove-Item C:\ImageStaging\LenovoThinkBookG6\install.wim
+Remove-Item C:\ImageStaging\LenovoThinkBookG8\install.wim
 
 # Notify
 Write-Host " "
-Write-Host "Lenovo ThinkBook G6 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
+Write-Host "Lenovo ThinkBook G8 Update Complete" -ForegroundColor white -BackgroundColor darkgreen
 
 
 #########################
