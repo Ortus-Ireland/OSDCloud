@@ -21,7 +21,6 @@ function Show-Menu {
     Write-Host "10: Lenovo ThinkCentre M70s G4"
     Write-Host "11: Surface Pro 11 for Business"    
     Write-Host "12: ThinkCentre Neo 50Q G4"     
-    
 }
 
 
