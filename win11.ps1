@@ -20,7 +20,8 @@ function Show-Menu {
     Write-Host "9: Surface Pro 10"
     Write-Host "10: Lenovo ThinkCentre M70s G4"
     Write-Host "11: Surface Pro 11 for Business"    
-    Write-Host "12: ThinkCentre Neo 50Q G4"     
+    Write-Host "12: ThinkCentre Neo 50Q G4"
+    Write-Host "13: Lenovo ThinkBook G6"
 }
 
 
@@ -77,6 +78,10 @@ do
     } '12' {
     write-host 'Using ThinkCentre Neo 50Q G4 image'
     $CustomImageFile = "http://wds/esd/Win11_ThinkCentreNeo50QG4.esd"
+    $selection = 'q'
+    } '13' {
+    write-host 'Using ThinkCentre Neo 50Q G4 image'
+    $CustomImageFile = "http://wds/esd/Win11_LenovoThinkBookG6.esd"
     $selection = 'q'
     }
     } 
