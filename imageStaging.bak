@@ -48,10 +48,19 @@ copy-item D:\sources\install.wim -destination C:\ImageStaging\install.wim -PassT
 
 ### Step 3 (Copy install.wim to device folders)
 ### Add more devices in 'Define Variables' above
+$totalDevices = $deviceList.Count
+$currentDevice = 0
+
 foreach ($device in $deviceList) {
+    $currentDevice++
+    $percentComplete = [math]::Round(($currentDevice / $totalDevices) * 100, 1)
+    
+    Write-Progress -Activity "Copying install.wim to device folders" -Status "Processing $device ($currentDevice of $totalDevices)" -PercentComplete $percentComplete -CurrentOperation "Copying to $device"
+    
     copy-item C:\ImageStaging\install.wim -destination "C:\ImageStaging\$device\install.wim" -PassThru | Set-ItemProperty -name IsReadOnly -Value $false
 }
 
+Write-Progress -Activity "Copying install.wim to device folders" -Completed
 Write-Host "Install.wim copied successfully!" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host ""
 
@@ -482,6 +491,45 @@ Write-Host " "
 Write-Host "***********************************" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host "* All Images Updated Successfully *" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host "***********************************" -ForegroundColor white -BackgroundColor darkgreen
+
+Get-WinEvent -FilterHashtable @{LogName='Security'; ID=4625,4771,4768} -MaxEvents 30 | 
+ForEach-Object {
+    $event = $_
+    $eventXML = [xml]$event.ToXml()
+    
+    Write-Output "=" * 80
+    Write-Output "Event ID: $($event.Id) | Time: $($event.TimeCreated)"
+    
+    switch ($event.Id) {
+        4625 { 
+            Write-Output "TYPE: Logon Failure"
+            Write-Output "Account: $($eventXML.Event.EventData.Data[5].'#text')"
+            Write-Output "Domain: $($eventXML.Event.EventData.Data[6].'#text')"
+            Write-Output "Workstation: $($eventXML.Event.EventData.Data[13].'#text')"
+            Write-Output "Source IP: $($eventXML.Event.EventData.Data[19].'#text')"
+            Write-Output "Failure Reason: $($eventXML.Event.EventData.Data[8].'#text')"
+            Write-Output "Sub Status: $($eventXML.Event.EventData.Data[9].'#text')"
+            Write-Output "Logon Type: $($eventXML.Event.EventData.Data[10].'#text')"
+        }
+        4768 { 
+            Write-Output "TYPE: Kerberos TGT Request"
+            Write-Output "Account: $($eventXML.Event.EventData.Data[0].'#text')"
+            Write-Output "Domain: $($eventXML.Event.EventData.Data[1].'#text')"
+            Write-Output "Result: $(if($eventXML.Event.EventData.Data[6].'#text' -eq '0x0') {'Success'} else {'Failed: ' + $eventXML.Event.EventData.Data[6].'#text'})"
+        }
+        4771 { 
+            Write-Output "TYPE: Kerberos Pre-Authentication Failed"
+            Write-Output "Account: $($eventXML.Event.EventData.Data[0].'#text')"
+            Write-Output "Domain: $($eventXML.Event.EventData.Data[1].'#text')"
+            Write-Output "Failure Code: $($eventXML.Event.EventData.Data[4].'#text')"
+        }
+    }
+    
+    Write-Output ""
+    Write-Output "FULL DESCRIPTION:"
+    Write-Output $event.Message
+    Write-Output ""
+} | Out-File -FilePath "C:\temp\detailed_security_events.txt" -Encoding UTF8
 
 
 

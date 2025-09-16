@@ -16,7 +16,8 @@ $deviceList = @(
     "LenovoThinkBookG7",
     "SurfacePro10",
     "ThinkCentreM70sG4",
-    "SurfacePro11Business"
+    "SurfacePro11Business",
+    "DellPro16250"
 #    "ThinkCentreNeo50QG4"
 )
 
