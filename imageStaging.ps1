@@ -7,18 +7,18 @@ $Host.PrivateData.ProgressForegroundColor = 'Yellow'
 ## Define Device Variables ##
 # These should match the folder names in the deployment directory
 $deviceList = @(
-    "SurfacePro9",
+#    "SurfacePro9",
     "LenovoThinkBookG8",
     "SurfaceGo4",
-    "ThinkCentreM70sG3",
+#    "ThinkCentreM70sG3",
     "Win11Pro_Generic",
-    "Win11Pro_AllDrivers",
-    "LenovoThinkBookG7",
+#    "Win11Pro_AllDrivers",
+#    "LenovoThinkBookG7",
     "SurfacePro10",
     "ThinkCentreM70sG4",
     "SurfacePro11Business",
-    "DellPro16250"
-#    "ThinkCentreNeo50QG4"
+    "DellPro16250",
+    "ThinkCentreNeo50QG4"
 )
 
 
