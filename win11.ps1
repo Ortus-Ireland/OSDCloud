@@ -22,6 +22,7 @@ function Show-Menu {
     Write-Host "11: Surface Pro 11 for Business"    
     Write-Host "12: ThinkCentre Neo 50Q G4"
     Write-Host "13: Dell Pro 16 PC16250"
+    Write-Host "14: Lenovo ThinkBook G6 [RIP]"
 }
 
 
@@ -82,6 +83,10 @@ do
     } '13' {
     write-host 'Using Dell Pro 16 PC16250 image'
     $CustomImageFile = "http://wds/esd/Win11_DellPro16250.esd"
+    $selection = 'q'
+    } '14' {
+    write-host 'Using ThinkBook G6 image'
+    $CustomImageFile = "http://wds/esd/Win11_LenovoThinkBookG6.esd"
     $selection = 'q'
     }
     } 
