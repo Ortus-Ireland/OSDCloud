@@ -5,8 +5,18 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 Install-Script -name Get-WindowsAutopilotInfo -Force
 
 $groupTag = Read-Host "Enter group tag (leave empty to skip)"
-if ([string]::IsNullOrEmpty($groupTag)) {
-    Get-WindowsAutopilotInfo -Online
-} else {
-    Get-WindowsAutopilotInfo -Online -GroupTag $groupTag
+$computerName = Read-Host "Enter computer name (leave empty to skip)"
+
+$params = @{
+    Online = $true
 }
+
+if (-not [string]::IsNullOrEmpty($groupTag)) {
+    $params.GroupTag = $groupTag
+}
+
+if (-not [string]::IsNullOrEmpty($computerName)) {
+    $params.AssignedComputerName = $computerName
+}
+
+Get-WindowsAutopilotInfo @params
