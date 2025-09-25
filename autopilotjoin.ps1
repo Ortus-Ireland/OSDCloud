@@ -3,4 +3,10 @@ Set-executionpolicy bypass -scope process
 #PowerShell.exe -ExecutionPolicy Bypass
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 Install-Script -name Get-WindowsAutopilotInfo -Force
-Get-WindowsAutopilotInfo -Online
+
+$groupTag = Read-Host "Enter group tag (leave empty to skip)"
+if ([string]::IsNullOrEmpty($groupTag)) {
+    Get-WindowsAutopilotInfo -Online
+} else {
+    Get-WindowsAutopilotInfo -Online -GroupTag $groupTag
+}
