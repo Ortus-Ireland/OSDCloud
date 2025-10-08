@@ -23,6 +23,7 @@ function Show-Menu {
     Write-Host "12: ThinkCentre Neo 50Q G4"
     Write-Host "13: Dell Pro 16 PC16250"
     Write-Host "14: Lenovo ThinkBook G6 [RIP]"
+    Write-Host "15: ThinkCentre M70s G5" 
 }
 
 
@@ -87,6 +88,10 @@ do
     } '14' {
     write-host 'Using ThinkBook G6 image'
     $CustomImageFile = "http://wds/esd/Win11_LenovoThinkBookG6.esd"
+    $selection = 'q'
+    } '15' {
+    write-host 'Using ThinkBook M70s G5 image'
+    $CustomImageFile = "http://wds/esd/Win11_ThinkCentreM70sG5.esd"
     $selection = 'q'
     }
     } 
