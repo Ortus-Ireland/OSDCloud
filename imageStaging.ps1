@@ -8,6 +8,7 @@ $Host.PrivateData.ProgressForegroundColor = 'Yellow'
 # These should match the folder names in the deployment directory
 $deviceList = @(
 #    "SurfacePro9",
+    "ThinkCentreM70sG5",
     "LenovoThinkBookG8",
     "SurfaceGo4",
 #    "ThinkCentreM70sG3",
@@ -157,3 +158,4 @@ Write-Host " "
 Write-Host "***********************************" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host "* All Images Updated Successfully *" -ForegroundColor white -BackgroundColor darkgreen
 Write-Host "***********************************" -ForegroundColor white -BackgroundColor darkgreen
+
