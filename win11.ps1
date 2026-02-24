@@ -17,17 +17,29 @@ function Parse-DeviceDate([string]$DateStr) {
     return $null
 }
 
+Write-Host -ForegroundColor Yellow "Fetching device config from $configUrl ..."
 $devices = @()
 try {
     $config = Invoke-RestMethod -Uri $configUrl -ErrorAction Stop
     $devices = @($config.devices | Where-Object { $_.enabled -eq $true })
+    Write-Host -ForegroundColor Green "Loaded $($devices.Count) enabled device(s)."
 } catch {
     Write-Host -ForegroundColor Red "Could not fetch device config from $configUrl"
     Write-Host -ForegroundColor Red "$_"
     Write-Host ""
-    $manual = Read-Host "Enter ESD URL manually (or press Enter to exit)"
-    if ([string]::IsNullOrWhiteSpace($manual)) { exit }
-    $CustomImageFile = $manual
+    Write-Host -ForegroundColor Yellow "Trying fallback: http://wds/imageStaging/imageStaging.json ..."
+    try {
+        $config = Invoke-WebRequest -Uri $configUrl -UseBasicParsing -ErrorAction Stop
+        $parsed = $config.Content | ConvertFrom-Json
+        $devices = @($parsed.devices | Where-Object { $_.enabled -eq $true })
+        Write-Host -ForegroundColor Green "Loaded $($devices.Count) enabled device(s) via fallback."
+    } catch {
+        Write-Host -ForegroundColor Red "Fallback also failed: $_"
+        Write-Host ""
+        $manual = Read-Host "Enter ESD URL manually (or press Enter to exit)"
+        if ([string]::IsNullOrWhiteSpace($manual)) { exit }
+        $CustomImageFile = $manual
+    }
 }
 
 if ($devices.Count -gt 0) {
@@ -87,6 +99,23 @@ if ($devices.Count -gt 0) {
         }
     } until ($selection -eq 'q')
 }
+
+if ([string]::IsNullOrWhiteSpace($CustomImageFile)) {
+    Write-Host ""
+    Write-Host -ForegroundColor Red "========================================="
+    Write-Host -ForegroundColor Red " ERROR: No image was selected!"
+    Write-Host -ForegroundColor Red "========================================="
+    Write-Host -ForegroundColor Yellow "Devices found: $($devices.Count)"
+    Write-Host -ForegroundColor Yellow "Config URL: $configUrl"
+    Write-Host ""
+    Write-Host "Press any key to exit..."
+    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
+    exit
+}
+
+Write-Host ""
+Write-Host -ForegroundColor Green "Image URL: $CustomImageFile"
+Write-Host ""
 
 # Set allowed ASCII character codes to Uppercase letters (65..90), 
 $charcodes = 65..90
