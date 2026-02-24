@@ -20,27 +20,22 @@ function Parse-DeviceDate([string]$DateStr) {
 Write-Host -ForegroundColor Yellow "Fetching device config from $configUrl ..."
 $devices = @()
 try {
-    $config = Invoke-RestMethod -Uri $configUrl -ErrorAction Stop
+    $response = Invoke-WebRequest -Uri $configUrl -UseBasicParsing -ErrorAction Stop
+    $raw = $response.Content
+    Write-Host -ForegroundColor Gray "Response length: $($raw.Length) chars"
+    Write-Host -ForegroundColor Gray "First 200 chars: $($raw.Substring(0, [Math]::Min(200, $raw.Length)))"
+    $config = $raw | ConvertFrom-Json
+    Write-Host -ForegroundColor Gray "Config type: $($config.GetType().Name)"
+    Write-Host -ForegroundColor Gray "Devices property type: $($config.devices.GetType().Name)"
     Write-Host -ForegroundColor Gray "Total devices in config: $($config.devices.Count)"
     $devices = @($config.devices | Where-Object { $_.enabled -eq $true -or $_.enabled -eq 'true' -or $_.enabled -eq 'True' })
     Write-Host -ForegroundColor Green "Loaded $($devices.Count) enabled device(s)."
 } catch {
-    Write-Host -ForegroundColor Red "Could not fetch device config from $configUrl"
-    Write-Host -ForegroundColor Red "$_"
+    Write-Host -ForegroundColor Red "Could not fetch device config: $_"
     Write-Host ""
-    Write-Host -ForegroundColor Yellow "Trying fallback: http://wds/imageStaging/imageStaging.json ..."
-    try {
-        $config = Invoke-WebRequest -Uri $configUrl -UseBasicParsing -ErrorAction Stop
-        $parsed = $config.Content | ConvertFrom-Json
-        $devices = @($parsed.devices | Where-Object { $_.enabled -eq $true -or $_.enabled -eq 'true' -or $_.enabled -eq 'True' })
-        Write-Host -ForegroundColor Green "Loaded $($devices.Count) enabled device(s) via fallback."
-    } catch {
-        Write-Host -ForegroundColor Red "Fallback also failed: $_"
-        Write-Host ""
-        $manual = Read-Host "Enter ESD URL manually (or press Enter to exit)"
-        if ([string]::IsNullOrWhiteSpace($manual)) { exit }
-        $CustomImageFile = $manual
-    }
+    $manual = Read-Host "Enter ESD URL manually (or press Enter to exit)"
+    if ([string]::IsNullOrWhiteSpace($manual)) { exit }
+    $CustomImageFile = $manual
 }
 
 if ($devices.Count -gt 0) {
