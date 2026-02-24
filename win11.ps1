@@ -22,12 +22,10 @@ $devices = @()
 try {
     $response = Invoke-WebRequest -Uri $configUrl -UseBasicParsing -ErrorAction Stop
     $raw = $response.Content
-    Write-Host -ForegroundColor Gray "Response length: $($raw.Length) chars"
-    Write-Host -ForegroundColor Gray "First 200 chars: $($raw.Substring(0, [Math]::Min(200, $raw.Length)))"
+    if ($raw[0] -eq [char]0xFEFF) { $raw = $raw.Substring(1) }
+    if ($raw.StartsWith([string][char]0xEF + [char]0xBB + [char]0xBF)) { $raw = $raw.Substring(3) }
+    $raw = $raw.Trim()
     $config = $raw | ConvertFrom-Json
-    Write-Host -ForegroundColor Gray "Config type: $($config.GetType().Name)"
-    Write-Host -ForegroundColor Gray "Devices property type: $($config.devices.GetType().Name)"
-    Write-Host -ForegroundColor Gray "Total devices in config: $($config.devices.Count)"
     $devices = @($config.devices | Where-Object { $_.enabled -eq $true -or $_.enabled -eq 'true' -or $_.enabled -eq 'True' })
     Write-Host -ForegroundColor Green "Loaded $($devices.Count) enabled device(s)."
 } catch {
