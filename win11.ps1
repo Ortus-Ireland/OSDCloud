@@ -21,7 +21,8 @@ Write-Host -ForegroundColor Yellow "Fetching device config from $configUrl ..."
 $devices = @()
 try {
     $config = Invoke-RestMethod -Uri $configUrl -ErrorAction Stop
-    $devices = @($config.devices | Where-Object { $_.enabled -eq $true })
+    Write-Host -ForegroundColor Gray "Total devices in config: $($config.devices.Count)"
+    $devices = @($config.devices | Where-Object { $_.enabled -eq $true -or $_.enabled -eq 'true' -or $_.enabled -eq 'True' })
     Write-Host -ForegroundColor Green "Loaded $($devices.Count) enabled device(s)."
 } catch {
     Write-Host -ForegroundColor Red "Could not fetch device config from $configUrl"
@@ -31,7 +32,7 @@ try {
     try {
         $config = Invoke-WebRequest -Uri $configUrl -UseBasicParsing -ErrorAction Stop
         $parsed = $config.Content | ConvertFrom-Json
-        $devices = @($parsed.devices | Where-Object { $_.enabled -eq $true })
+        $devices = @($parsed.devices | Where-Object { $_.enabled -eq $true -or $_.enabled -eq 'true' -or $_.enabled -eq 'True' })
         Write-Host -ForegroundColor Green "Loaded $($devices.Count) enabled device(s) via fallback."
     } catch {
         Write-Host -ForegroundColor Red "Fallback also failed: $_"
