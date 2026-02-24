@@ -1,5 +1,5 @@
 ### Ekco MSP - OSDCloud Image Selection ###
-### Dynamically reads enabled devices from imageStaging.json via IIS ###
+### Reads enabled devices from imageStaging.json via IIS ###
 
 $configUrl = "http://wds/imageStaging/imageStaging.json"
 $Index = 1
