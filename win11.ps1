@@ -129,7 +129,8 @@ if ($devices.Count -gt 0) {
                             <Popup IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom"
                                    AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
                                 <Border Background="#313244" BorderBrush="#45475a" BorderThickness="1"
-                                        CornerRadius="6" Margin="0,2,0,0" Padding="0,4">
+                                        CornerRadius="6" Margin="0,2,0,0" Padding="0,4"
+                                        MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ComboBox}}">
                                     <ScrollViewer MaxHeight="220" VerticalScrollBarVisibility="Auto">
                                         <StackPanel IsItemsHost="True"/>
                                     </ScrollViewer>
