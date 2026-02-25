@@ -46,15 +46,35 @@ try {
 }
 
 if ($devices.Count -gt 0) {
-    function Show-Menu {
+    $manufacturers = @($devices | ForEach-Object {
+        if ($_.manufacturer) { $_.manufacturer } else { "Other" }
+    } | Select-Object -Unique | Sort-Object)
+
+    function Show-ManufacturerMenu {
         Clear-Host
         Write-Host "==================== Ekco MSP - Image Selection ====================" -ForegroundColor Cyan
         Write-Host ""
+        Write-Host " Select a manufacturer:" -ForegroundColor DarkGray
+        Write-Host (" " + ("-" * 40)) -ForegroundColor DarkGray
+        for ($i = 0; $i -lt $manufacturers.Count; $i++) {
+            $mfg = $manufacturers[$i]
+            $count = @($devices | Where-Object { (if ($_.manufacturer) { $_.manufacturer } else { "Other" }) -eq $mfg }).Count
+            Write-Host (" {0,3}  {1}  " -f ($i + 1), $mfg) -NoNewline -ForegroundColor White
+            Write-Host "($count device$(if ($count -ne 1) { 's' }))" -ForegroundColor DarkGray
+        }
+        Write-Host ""
+    }
+
+    function Show-DeviceMenu($MfgName, $MfgDevices) {
+        Clear-Host
+        Write-Host "==================== Ekco MSP - Image Selection ====================" -ForegroundColor Cyan
+        Write-Host ""
+        Write-Host " $MfgName devices:" -ForegroundColor Cyan
         Write-Host (" {0,3}  {1,-34} {2,-18} {3}" -f "#", "Device", "Image Version", "Drivers") -ForegroundColor DarkGray
         Write-Host (" " + ("-" * 76)) -ForegroundColor DarkGray
 
-        for ($i = 0; $i -lt $devices.Count; $i++) {
-            $d    = $devices[$i]
+        for ($i = 0; $i -lt $MfgDevices.Count; $i++) {
+            $d    = $MfgDevices[$i]
             $name = if ($d.friendlyName) { $d.friendlyName } else { $d.name }
             $img  = if ($d.imageVersion) { $d.imageVersion } else { "--" }
             $drv  = if ($d.captureDate -and $d.captureDate -ne '') { $d.captureDate } else { "--" }
@@ -82,25 +102,51 @@ if ($devices.Count -gt 0) {
         Write-Host "Green = current  " -NoNewline -ForegroundColor Green
         Write-Host "Red = older than 90 days" -ForegroundColor Red
         Write-Host ""
+        Write-Host "   B  " -NoNewline -ForegroundColor Yellow
+        Write-Host "Back to manufacturers" -ForegroundColor DarkGray
+        Write-Host ""
     }
 
-    do {
-        Show-Menu
-        $selection = Read-Host "Select an image (1-$($devices.Count))"
-        $num = 0
-        if ([int]::TryParse($selection, [ref]$num) -and $num -ge 1 -and $num -le $devices.Count) {
-            $chosen     = $devices[$num - 1]
-            $chosenName = if ($chosen.friendlyName) { $chosen.friendlyName } else { $chosen.name }
-            $CustomImageFile = Get-EsdUrl $chosen.name
-            Write-Host ""
-            Write-Host -ForegroundColor Green "Selected: $chosenName"
-            Write-Host -ForegroundColor Green "ESD:      $CustomImageFile"
-            $selection = 'q'
-        } else {
+    $chosen = $null
+    while ($null -eq $chosen) {
+        Show-ManufacturerMenu
+        $mfgSel = Read-Host "Select manufacturer (1-$($manufacturers.Count))"
+        $mfgNum = 0
+        if (-not ([int]::TryParse($mfgSel, [ref]$mfgNum)) -or $mfgNum -lt 1 -or $mfgNum -gt $manufacturers.Count) {
             Write-Host -ForegroundColor Red "Invalid selection, try again."
             Start-Sleep -Seconds 1
+            continue
         }
-    } until ($selection -eq 'q')
+
+        $selMfg = $manufacturers[$mfgNum - 1]
+        $mfgDevices = @($devices | Where-Object {
+            (if ($_.manufacturer) { $_.manufacturer } else { "Other" }) -eq $selMfg
+        })
+
+        $pickingDevice = $true
+        while ($pickingDevice) {
+            Show-DeviceMenu $selMfg $mfgDevices
+            $devSel = Read-Host "Select a device (1-$($mfgDevices.Count)) or B to go back"
+            if ($devSel -eq 'b' -or $devSel -eq 'B') {
+                $pickingDevice = $false
+                continue
+            }
+            $devNum = 0
+            if ([int]::TryParse($devSel, [ref]$devNum) -and $devNum -ge 1 -and $devNum -le $mfgDevices.Count) {
+                $chosen = $mfgDevices[$devNum - 1]
+                $pickingDevice = $false
+            } else {
+                Write-Host -ForegroundColor Red "Invalid selection, try again."
+                Start-Sleep -Seconds 1
+            }
+        }
+    }
+
+    $chosenName = if ($chosen.friendlyName) { $chosen.friendlyName } else { $chosen.name }
+    $CustomImageFile = Get-EsdUrl $chosen.name
+    Write-Host ""
+    Write-Host -ForegroundColor Green "Selected: $chosenName"
+    Write-Host -ForegroundColor Green "ESD:      $CustomImageFile"
 }
 
 if ([string]::IsNullOrWhiteSpace($CustomImageFile)) {
