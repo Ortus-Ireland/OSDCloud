@@ -46,9 +46,12 @@ try {
 }
 
 if ($devices.Count -gt 0) {
-    $manufacturers = @($devices | ForEach-Object {
-        if ($_.manufacturer) { $_.manufacturer } else { "Other" }
-    } | Select-Object -Unique | Sort-Object)
+    function Get-DeviceMfg($dev) {
+        if ($dev.manufacturer) { return $dev.manufacturer }
+        return "Other"
+    }
+
+    $manufacturers = @($devices | ForEach-Object { Get-DeviceMfg $_ } | Select-Object -Unique | Sort-Object)
 
     function Show-ManufacturerMenu {
         Clear-Host
@@ -58,9 +61,11 @@ if ($devices.Count -gt 0) {
         Write-Host (" " + ("-" * 40)) -ForegroundColor DarkGray
         for ($i = 0; $i -lt $manufacturers.Count; $i++) {
             $mfg = $manufacturers[$i]
-            $count = @($devices | Where-Object { $m = if ($_.manufacturer) { $_.manufacturer } else { "Other" }; $m -eq $mfg }).Count
+            $count = @($devices | Where-Object { (Get-DeviceMfg $_) -eq $mfg }).Count
+            $suffix = "s"
+            if ($count -eq 1) { $suffix = "" }
             Write-Host (" {0,3}  {1}  " -f ($i + 1), $mfg) -NoNewline -ForegroundColor White
-            Write-Host "($count device$(if ($count -ne 1) { 's' }))" -ForegroundColor DarkGray
+            Write-Host "($count device$suffix)" -ForegroundColor DarkGray
         }
         Write-Host ""
     }
@@ -74,10 +79,13 @@ if ($devices.Count -gt 0) {
         Write-Host (" " + ("-" * 76)) -ForegroundColor DarkGray
 
         for ($i = 0; $i -lt $MfgDevices.Count; $i++) {
-            $d    = $MfgDevices[$i]
-            $name = if ($d.friendlyName) { $d.friendlyName } else { $d.name }
-            $img  = if ($d.imageVersion) { $d.imageVersion } else { "--" }
-            $drv  = if ($d.captureDate -and $d.captureDate -ne '') { $d.captureDate } else { "--" }
+            $d = $MfgDevices[$i]
+            $name = $d.name
+            if ($d.friendlyName) { $name = $d.friendlyName }
+            $img = "--"
+            if ($d.imageVersion) { $img = $d.imageVersion }
+            $drv = "--"
+            if ($d.captureDate -and $d.captureDate -ne '') { $drv = $d.captureDate }
 
             $drvColor = "Green"
             if ($drv -eq "--") {
@@ -119,9 +127,7 @@ if ($devices.Count -gt 0) {
         }
 
         $selMfg = $manufacturers[$mfgNum - 1]
-        $mfgDevices = @($devices | Where-Object {
-            $m = if ($_.manufacturer) { $_.manufacturer } else { "Other" }; $m -eq $selMfg
-        })
+        $mfgDevices = @($devices | Where-Object { (Get-DeviceMfg $_) -eq $selMfg })
 
         $pickingDevice = $true
         while ($pickingDevice) {
@@ -142,7 +148,8 @@ if ($devices.Count -gt 0) {
         }
     }
 
-    $chosenName = if ($chosen.friendlyName) { $chosen.friendlyName } else { $chosen.name }
+    $chosenName = $chosen.name
+    if ($chosen.friendlyName) { $chosenName = $chosen.friendlyName }
     $CustomImageFile = Get-EsdUrl $chosen.name
     Write-Host ""
     Write-Host -ForegroundColor Green "Selected: $chosenName"
