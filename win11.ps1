@@ -75,13 +75,14 @@ if ($devices.Count -gt 0) {
         Write-Host "==================== Ekco MSP - Image Selection ====================" -ForegroundColor Cyan
         Write-Host ""
         Write-Host " $MfgName devices:" -ForegroundColor Cyan
-        Write-Host (" {0,3}  {1,-34} {2,-18} {3}" -f "#", "Device", "Image Version", "Drivers") -ForegroundColor DarkGray
-        Write-Host (" " + ("-" * 76)) -ForegroundColor DarkGray
+        Write-Host (" {0,3}  {1,-38} {2,-18} {3}" -f "#", "Model", "Image Version", "Drivers") -ForegroundColor DarkGray
+        Write-Host (" " + ("-" * 80)) -ForegroundColor DarkGray
 
         for ($i = 0; $i -lt $MfgDevices.Count; $i++) {
             $d = $MfgDevices[$i]
             $name = $d.name
-            if ($d.friendlyName) { $name = $d.friendlyName }
+            if ($d.model) { $name = $d.model }
+            elseif ($d.friendlyName) { $name = $d.friendlyName }
             $img = "--"
             if ($d.imageVersion) { $img = $d.imageVersion }
             $drv = "--"
@@ -100,7 +101,7 @@ if ($devices.Count -gt 0) {
             }
 
             Write-Host (" {0,3}  " -f ($i + 1)) -NoNewline -ForegroundColor White
-            Write-Host ("{0,-34} " -f $name) -NoNewline
+            Write-Host ("{0,-38} " -f $name) -NoNewline
             Write-Host ("{0,-18} " -f $img) -NoNewline -ForegroundColor Cyan
             Write-Host $drv -ForegroundColor $drvColor
         }
