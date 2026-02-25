@@ -1,15 +1,24 @@
 ### Ekco MSP - OSDCloud Image Selection ###
 ### Reads enabled devices from imageStaging.json via IIS ###
 
-$configUrl = "http://wds/imageStaging/imageStaging.json"
+$wdsHost = "wds"
+try {
+    $serverCfg = Invoke-WebRequest -Uri "http://wds/imageStaging/wdsServer.json" -UseBasicParsing -ErrorAction Stop
+    $raw = $serverCfg.Content.Trim()
+    if ($raw[0] -eq [char]0xFEFF) { $raw = $raw.Substring(1) }
+    $srv = $raw | ConvertFrom-Json
+    if ($srv.hostname) { $wdsHost = $srv.hostname }
+} catch { }
+
+$configUrl = "http://$wdsHost/imageStaging/imageStaging.json"
 $Index = 1
 
 function Get-EsdUrl([string]$Name) {
-    if ($Name -match '^Win\d') { return "http://wds/esd/$Name.esd" }
-    return "http://wds/esd/Win11_$Name.esd"
+    if ($Name -match '^Win\d') { return "http://$wdsHost/esd/$Name.esd" }
+    return "http://$wdsHost/esd/Win11_$Name.esd"
 }
 
-function Parse-DeviceDate([string]$DateStr) {
+function ConvertTo-DeviceDate([string]$DateStr) {
     if ([string]::IsNullOrWhiteSpace($DateStr)) { return $null }
     foreach ($fmt in @('dd-MM-yyyy', 'dd/MM/yyyy', 'yyyy-MM-dd')) {
         try { return [datetime]::ParseExact($DateStr, $fmt, $null) } catch { }
@@ -54,7 +63,7 @@ if ($devices.Count -gt 0) {
             if ($drv -eq "--") {
                 $drvColor = "DarkGray"
             } else {
-                $parsed = Parse-DeviceDate $d.captureDate
+                $parsed = ConvertTo-DeviceDate $d.captureDate
                 if ($null -eq $parsed) {
                     $drvColor = "Yellow"
                 } elseif (((Get-Date) - $parsed).TotalDays -gt 90) {
