@@ -27,7 +27,7 @@ function ConvertTo-DeviceDate([string]$DateStr) {
 }
 
 Write-Host -ForegroundColor Yellow "Fetching device config from $configUrl ..."
-$script:devices = @()
+$devices = @()
 try {
     $response = Invoke-WebRequest -Uri $configUrl -UseBasicParsing -ErrorAction Stop
     $raw = $response.Content
@@ -35,8 +35,8 @@ try {
     if ($raw.StartsWith([string][char]0xEF + [char]0xBB + [char]0xBF)) { $raw = $raw.Substring(3) }
     $raw = $raw.Trim()
     $config = $raw | ConvertFrom-Json
-    $script:devices = @($config.devices | Where-Object { $_.enabled -eq $true -or $_.enabled -eq 'true' -or $_.enabled -eq 'True' })
-    Write-Host -ForegroundColor Green "Loaded $($script:devices.Count) enabled device(s)."
+    $devices = @($config.devices | Where-Object { $_.enabled -eq $true -or $_.enabled -eq 'true' -or $_.enabled -eq 'True' })
+    Write-Host -ForegroundColor Green "Loaded $($devices.Count) enabled device(s)."
 } catch {
     Write-Host -ForegroundColor Red "Could not fetch device config: $_"
     Write-Host ""
@@ -53,9 +53,10 @@ function Get-DeviceMfg($dev) {
 $randomName = (65..90 | ForEach-Object { [char][byte]$_ } | Get-Random -Count 10) -join ""
 
 $guiSuccess = $false
+$script:devices = $devices
 
-if ($script:devices.Count -gt 0) {
-    $manufacturers = @($script:devices | ForEach-Object { Get-DeviceMfg $_ } | Select-Object -Unique | Sort-Object)
+if ($devices.Count -gt 0) {
+    $manufacturers = @($devices | ForEach-Object { Get-DeviceMfg $_ } | Select-Object -Unique | Sort-Object)
 
     try {
         Add-Type -AssemblyName PresentationFramework -ErrorAction Stop
