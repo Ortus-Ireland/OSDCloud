@@ -58,7 +58,7 @@ if ($devices.Count -gt 0) {
         Write-Host (" " + ("-" * 40)) -ForegroundColor DarkGray
         for ($i = 0; $i -lt $manufacturers.Count; $i++) {
             $mfg = $manufacturers[$i]
-            $count = @($devices | Where-Object { (if ($_.manufacturer) { $_.manufacturer } else { "Other" }) -eq $mfg }).Count
+            $count = @($devices | Where-Object { $m = if ($_.manufacturer) { $_.manufacturer } else { "Other" }; $m -eq $mfg }).Count
             Write-Host (" {0,3}  {1}  " -f ($i + 1), $mfg) -NoNewline -ForegroundColor White
             Write-Host "($count device$(if ($count -ne 1) { 's' }))" -ForegroundColor DarkGray
         }
@@ -120,7 +120,7 @@ if ($devices.Count -gt 0) {
 
         $selMfg = $manufacturers[$mfgNum - 1]
         $mfgDevices = @($devices | Where-Object {
-            (if ($_.manufacturer) { $_.manufacturer } else { "Other" }) -eq $selMfg
+            $m = if ($_.manufacturer) { $_.manufacturer } else { "Other" }; $m -eq $selMfg
         })
 
         $pickingDevice = $true
