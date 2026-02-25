@@ -27,7 +27,7 @@ function ConvertTo-DeviceDate([string]$DateStr) {
 }
 
 Write-Host -ForegroundColor Yellow "Fetching device config from $configUrl ..."
-$devices = @()
+$script:devices = @()
 try {
     $response = Invoke-WebRequest -Uri $configUrl -UseBasicParsing -ErrorAction Stop
     $raw = $response.Content
@@ -35,8 +35,8 @@ try {
     if ($raw.StartsWith([string][char]0xEF + [char]0xBB + [char]0xBF)) { $raw = $raw.Substring(3) }
     $raw = $raw.Trim()
     $config = $raw | ConvertFrom-Json
-    $devices = @($config.devices | Where-Object { $_.enabled -eq $true -or $_.enabled -eq 'true' -or $_.enabled -eq 'True' })
-    Write-Host -ForegroundColor Green "Loaded $($devices.Count) enabled device(s)."
+    $script:devices = @($config.devices | Where-Object { $_.enabled -eq $true -or $_.enabled -eq 'true' -or $_.enabled -eq 'True' })
+    Write-Host -ForegroundColor Green "Loaded $($script:devices.Count) enabled device(s)."
 } catch {
     Write-Host -ForegroundColor Red "Could not fetch device config: $_"
     Write-Host ""
@@ -54,8 +54,8 @@ $randomName = (65..90 | ForEach-Object { [char][byte]$_ } | Get-Random -Count 10
 
 $guiSuccess = $false
 
-if ($devices.Count -gt 0) {
-    $manufacturers = @($devices | ForEach-Object { Get-DeviceMfg $_ } | Select-Object -Unique | Sort-Object)
+if ($script:devices.Count -gt 0) {
+    $manufacturers = @($script:devices | ForEach-Object { Get-DeviceMfg $_ } | Select-Object -Unique | Sort-Object)
 
     try {
         Add-Type -AssemblyName PresentationFramework -ErrorAction Stop
@@ -236,8 +236,13 @@ if ($devices.Count -gt 0) {
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Ekco MSP - Image Selection"
-                   Foreground="#89b4fa" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Ekco MSP - Image Selection"
+                       Foreground="#89b4fa" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+            <Button Name="RefreshBtn" Content="&#x21BB; Refresh" HorizontalAlignment="Right"
+                    Padding="12,6" FontSize="12"
+                    Background="#45475a" Foreground="#cdd6f4" Cursor="Hand"/>
+        </Grid>
 
         <TextBlock Grid.Row="1" Text="Manufacturer" Foreground="#a6adc8" FontSize="12" Margin="0,0,0,6"/>
         <ComboBox Name="MfgCombo" Grid.Row="2" Margin="0,0,0,14"/>
@@ -276,6 +281,7 @@ if ($devices.Count -gt 0) {
         $compNameBox = $win.FindName("CompNameBox")
         $summaryText = $win.FindName("SummaryText")
         $selectBtn   = $win.FindName("SelectBtn")
+        $refreshBtn  = $win.FindName("RefreshBtn")
 
         foreach ($m in $manufacturers) { $mfgCombo.Items.Add($m) | Out-Null }
 
@@ -296,7 +302,7 @@ if ($devices.Count -gt 0) {
             $selMfg = $mfgCombo.SelectedItem
             if ($null -eq $selMfg) { return }
 
-            $script:guiDevices = @($devices | Where-Object { (Get-DeviceMfg $_) -eq $selMfg })
+            $script:guiDevices = @($script:devices | Where-Object { (Get-DeviceMfg $_) -eq $selMfg })
 
             foreach ($d in $script:guiDevices) {
                 $model = $d.name
@@ -389,6 +395,43 @@ if ($devices.Count -gt 0) {
             }
         })
 
+        $refreshBtn.Add_Click({
+            $refreshBtn.IsEnabled = $false
+            $refreshBtn.Content = "Refreshing..."
+            try {
+                $resp = Invoke-WebRequest -Uri $configUrl -UseBasicParsing -ErrorAction Stop
+                $rawJson = $resp.Content
+                if ($rawJson[0] -eq [char]0xFEFF) { $rawJson = $rawJson.Substring(1) }
+                if ($rawJson.StartsWith([string][char]0xEF + [char]0xBB + [char]0xBF)) { $rawJson = $rawJson.Substring(3) }
+                $rawJson = $rawJson.Trim()
+                $cfg = $rawJson | ConvertFrom-Json
+
+                $script:devices = @($cfg.devices | Where-Object { $_.enabled -eq $true -or $_.enabled -eq 'true' -or $_.enabled -eq 'True' })
+                $newMfgs = @()
+                foreach ($d in $script:devices) {
+                    $m = Get-DeviceMfg $d
+                    if ($m -and $newMfgs -notcontains $m) { $newMfgs += $m }
+                }
+                $newMfgs = @($newMfgs | Sort-Object)
+
+                $previousMfg = $mfgCombo.SelectedItem
+                $mfgCombo.Items.Clear()
+                foreach ($m in $newMfgs) { $mfgCombo.Items.Add($m) | Out-Null }
+
+                if ($previousMfg -and $newMfgs -contains $previousMfg) {
+                    $mfgCombo.SelectedItem = $previousMfg
+                } elseif ($newMfgs.Count -eq 1) {
+                    $mfgCombo.SelectedIndex = 0
+                }
+
+                $summaryText.Text = "Refreshed — $($script:devices.Count) enabled device(s) loaded."
+            } catch {
+                $summaryText.Text = "Refresh failed: $_"
+            }
+            $refreshBtn.Content = "$([char]0x21BB) Refresh"
+            $refreshBtn.IsEnabled = $true
+        })
+
         if ($manufacturers.Count -eq 1) { $mfgCombo.SelectedIndex = 0 }
 
         $win.Add_ContentRendered({ $mfgCombo.Focus() })
@@ -420,7 +463,7 @@ if ($devices.Count -gt 0) {
             Write-Host (" " + ("-" * 40)) -ForegroundColor DarkGray
             for ($i = 0; $i -lt $manufacturers.Count; $i++) {
                 $mfg = $manufacturers[$i]
-                $count = @($devices | Where-Object { (Get-DeviceMfg $_) -eq $mfg }).Count
+                $count = @($script:devices | Where-Object { (Get-DeviceMfg $_) -eq $mfg }).Count
                 $suffix = "s"
                 if ($count -eq 1) { $suffix = "" }
                 Write-Host (" {0,3}  {1}  " -f ($i + 1), $mfg) -NoNewline -ForegroundColor White
@@ -437,7 +480,7 @@ if ($devices.Count -gt 0) {
             }
 
             $selMfg = $manufacturers[$mfgNum - 1]
-            $mfgDevices = @($devices | Where-Object { (Get-DeviceMfg $_) -eq $selMfg })
+            $mfgDevices = @($script:devices | Where-Object { (Get-DeviceMfg $_) -eq $selMfg })
 
             $pickingDevice = $true
             while ($pickingDevice) {
@@ -506,7 +549,7 @@ if ([string]::IsNullOrWhiteSpace($CustomImageFile)) {
     Write-Host -ForegroundColor Red "========================================="
     Write-Host -ForegroundColor Red " ERROR: No image was selected!"
     Write-Host -ForegroundColor Red "========================================="
-    Write-Host -ForegroundColor Yellow "Devices found: $($devices.Count)"
+    Write-Host -ForegroundColor Yellow "Devices found: $($script:devices.Count)"
     Write-Host -ForegroundColor Yellow "Config URL: $configUrl"
     Write-Host ""
     Write-Host "Press any key to exit..."
