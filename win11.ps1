@@ -17,11 +17,10 @@ $Index = 1
 $ProIndex = 5
 
 function Get-ImageUrl([string]$Name, [string]$ImageVersion) {
-    $base = "http://$wdsHost/esd"
     $pfx = $imagePrefix
     if ($ImageVersion -match 'Windows\s+(\d+)') { $pfx = "Win$($Matches[1])" }
     $prefix = if ($Name -match '^Win\d') { $Name } else { "${pfx}_$Name" }
-    $wimUrl = "$base/$prefix.wim"
+    $wimUrl = "http://$wdsHost/wim/$prefix.wim"
     try {
         $resp = Invoke-WebRequest -Uri $wimUrl -Method Head -UseBasicParsing -ErrorAction Stop
         if ($resp.StatusCode -eq 200) {
@@ -30,7 +29,7 @@ function Get-ImageUrl([string]$Name, [string]$ImageVersion) {
         }
     } catch { }
     $script:Index = $ProIndex
-    return "$base/$prefix.esd"
+    return "http://$wdsHost/esd/$prefix.esd"
 }
 
 function ConvertTo-DeviceDate([string]$DateStr) {
