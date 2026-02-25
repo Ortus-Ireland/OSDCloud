@@ -55,7 +55,10 @@ if ($devices.Count -gt 0) {
 
     function Show-ManufacturerMenu {
         Clear-Host
+        Write-Host ""
+        Write-Host "===================================================================="
         Write-Host "==================== Ekco MSP - Image Selection ====================" -ForegroundColor Cyan
+        Write-Host "===================================================================="
         Write-Host ""
         Write-Host " Select a manufacturer:" -ForegroundColor DarkGray
         Write-Host (" " + ("-" * 40)) -ForegroundColor DarkGray
