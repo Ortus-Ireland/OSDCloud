@@ -2,7 +2,7 @@
 ### Reads enabled devices from imageStaging.json via IIS ###
 
 $wdsHost = "wds"
-$imagePrefix = "Win11"
+$imagePrefix = ""
 try {
     $serverCfg = Invoke-WebRequest -Uri "http://wds/imageStaging/wdsServer.json" -UseBasicParsing -ErrorAction Stop
     $raw = $serverCfg.Content.Trim()
@@ -19,7 +19,13 @@ $ProIndex = 5
 function Get-ImageUrl([string]$Name, [string]$ImageVersion) {
     $pfx = $imagePrefix
     if ($ImageVersion -match 'Windows\s+(\d+)') { $pfx = "Win$($Matches[1])" }
-    $prefix = if ($Name -match '^Win\d') { $Name } else { "${pfx}_$Name" }
+    if ($Name -match '^Win\d') {
+        $prefix = $Name
+    } elseif ($pfx) {
+        $prefix = "${pfx}_$Name"
+    } else {
+        $prefix = $Name
+    }
     $wimUrl = "http://$wdsHost/wim/$prefix.wim"
     try {
         $resp = Invoke-WebRequest -Uri $wimUrl -Method Head -UseBasicParsing -ErrorAction Stop
