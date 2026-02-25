@@ -1,16 +1,6 @@
 ### Ekco MSP - OSDCloud Image Selection ###
 ### Reads enabled devices from imageStaging.json via IIS ###
 
-$ErrorActionPreference = 'Continue'
-trap {
-    Write-Host ""
-    Write-Host -ForegroundColor Red "FATAL ERROR: $_"
-    Write-Host -ForegroundColor Red $_.ScriptStackTrace
-    Write-Host ""
-    Write-Host "Press any key to continue..."
-    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-}
-
 $wdsHost = "wds"
 try {
     $serverCfg = Invoke-WebRequest -Uri "http://wds/imageStaging/wdsServer.json" -UseBasicParsing -ErrorAction Stop
@@ -63,7 +53,6 @@ function Get-DeviceMfg($dev) {
 $randomName = (65..90 | ForEach-Object { [char][byte]$_ } | Get-Random -Count 10) -join ""
 
 $guiSuccess = $false
-$global:allDevices = $devices
 
 if ($devices.Count -gt 0) {
     $manufacturers = @($devices | ForEach-Object { Get-DeviceMfg $_ } | Select-Object -Unique | Sort-Object)
@@ -247,13 +236,8 @@ if ($devices.Count -gt 0) {
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Margin="0,0,0,20">
-            <TextBlock Text="Ekco MSP - Image Selection"
-                       Foreground="#89b4fa" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
-            <Button Name="RefreshBtn" Content="Refresh" HorizontalAlignment="Right"
-                    Padding="12,6" FontSize="12"
-                    Background="#45475a" Foreground="#cdd6f4" Cursor="Hand"/>
-        </Grid>
+        <TextBlock Grid.Row="0" Text="Ekco MSP - Image Selection"
+                   Foreground="#89b4fa" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
 
         <TextBlock Grid.Row="1" Text="Manufacturer" Foreground="#a6adc8" FontSize="12" Margin="0,0,0,6"/>
         <ComboBox Name="MfgCombo" Grid.Row="2" Margin="0,0,0,14"/>
@@ -292,15 +276,14 @@ if ($devices.Count -gt 0) {
         $compNameBox = $win.FindName("CompNameBox")
         $summaryText = $win.FindName("SummaryText")
         $selectBtn   = $win.FindName("SelectBtn")
-        $refreshBtn  = $win.FindName("RefreshBtn")
 
         foreach ($m in $manufacturers) { $mfgCombo.Items.Add($m) | Out-Null }
 
         $compNameBox.Text = $randomName
 
-        $global:guiDevices = @()
-        $global:guiChosen  = $null
-        $global:guiCompName = ""
+        $script:guiDevices = @()
+        $script:guiChosen  = $null
+        $script:guiCompName = ""
 
         $updateSelectBtn = {
             $devOk  = ($deviceList.SelectedIndex -ge 0)
@@ -313,9 +296,9 @@ if ($devices.Count -gt 0) {
             $selMfg = $mfgCombo.SelectedItem
             if ($null -eq $selMfg) { return }
 
-            $global:guiDevices = @($global:allDevices | Where-Object { (Get-DeviceMfg $_) -eq $selMfg })
+            $script:guiDevices = @($devices | Where-Object { (Get-DeviceMfg $_) -eq $selMfg })
 
-            foreach ($d in $global:guiDevices) {
+            foreach ($d in $script:guiDevices) {
                 $model = $d.name
                 if ($d.model) { $model = $d.model }
                 elseif ($d.friendlyName) { $model = $d.friendlyName }
@@ -386,8 +369,8 @@ if ($devices.Count -gt 0) {
 
         $deviceList.Add_SelectionChanged({
             $idx = $deviceList.SelectedIndex
-            if ($idx -ge 0 -and $idx -lt $global:guiDevices.Count) {
-                $d = $global:guiDevices[$idx]
+            if ($idx -ge 0 -and $idx -lt $script:guiDevices.Count) {
+                $d = $script:guiDevices[$idx]
                 $summaryText.Text = "ESD: $(Get-EsdUrl $d.name)"
             } else {
                 $summaryText.Text = ""
@@ -399,48 +382,11 @@ if ($devices.Count -gt 0) {
 
         $selectBtn.Add_Click({
             $idx = $deviceList.SelectedIndex
-            if ($idx -ge 0 -and $idx -lt $global:guiDevices.Count) {
-                $global:guiChosen = $global:guiDevices[$idx]
-                $global:guiCompName = $compNameBox.Text.Trim()
+            if ($idx -ge 0 -and $idx -lt $script:guiDevices.Count) {
+                $script:guiChosen = $script:guiDevices[$idx]
+                $script:guiCompName = $compNameBox.Text.Trim()
                 $win.DialogResult = $true
             }
-        })
-
-        $refreshBtn.Add_Click({
-            $refreshBtn.IsEnabled = $false
-            $refreshBtn.Content = "Refreshing..."
-            try {
-                $resp = Invoke-WebRequest -Uri $configUrl -UseBasicParsing -ErrorAction Stop
-                $rawJson = $resp.Content
-                if ($rawJson[0] -eq [char]0xFEFF) { $rawJson = $rawJson.Substring(1) }
-                if ($rawJson.StartsWith([string][char]0xEF + [char]0xBB + [char]0xBF)) { $rawJson = $rawJson.Substring(3) }
-                $rawJson = $rawJson.Trim()
-                $cfg = $rawJson | ConvertFrom-Json
-
-                $global:allDevices = @($cfg.devices | Where-Object { $_.enabled -eq $true -or $_.enabled -eq 'true' -or $_.enabled -eq 'True' })
-                $newMfgs = @()
-                foreach ($d in $global:allDevices) {
-                    $m = Get-DeviceMfg $d
-                    if ($m -and $newMfgs -notcontains $m) { $newMfgs += $m }
-                }
-                $newMfgs = @($newMfgs | Sort-Object)
-
-                $previousMfg = $mfgCombo.SelectedItem
-                $mfgCombo.Items.Clear()
-                foreach ($m in $newMfgs) { $mfgCombo.Items.Add($m) | Out-Null }
-
-                if ($previousMfg -and $newMfgs -contains $previousMfg) {
-                    $mfgCombo.SelectedItem = $previousMfg
-                } elseif ($newMfgs.Count -eq 1) {
-                    $mfgCombo.SelectedIndex = 0
-                }
-
-                $summaryText.Text = "Refreshed — $($global:allDevices.Count) enabled device(s) loaded."
-            } catch {
-                $summaryText.Text = "Refresh failed: $_"
-            }
-            $refreshBtn.Content = "Refresh"
-            $refreshBtn.IsEnabled = $true
         })
 
         if ($manufacturers.Count -eq 1) { $mfgCombo.SelectedIndex = 0 }
@@ -448,11 +394,11 @@ if ($devices.Count -gt 0) {
         $win.Add_ContentRendered({ $mfgCombo.Focus() })
         $result = $win.ShowDialog()
 
-        if ($result -eq $true -and $null -ne $global:guiChosen) {
-            $chosenName = $global:guiChosen.name
-            if ($global:guiChosen.friendlyName) { $chosenName = $global:guiChosen.friendlyName }
-            $CustomImageFile = Get-EsdUrl $global:guiChosen.name
-            $ComputerName = $global:guiCompName
+        if ($result -eq $true -and $null -ne $script:guiChosen) {
+            $chosenName = $script:guiChosen.name
+            if ($script:guiChosen.friendlyName) { $chosenName = $script:guiChosen.friendlyName }
+            $CustomImageFile = Get-EsdUrl $script:guiChosen.name
+            $ComputerName = $script:guiCompName
             $guiSuccess = $true
             Write-Host ""
             Write-Host -ForegroundColor Green "Selected: $chosenName"
@@ -474,7 +420,7 @@ if ($devices.Count -gt 0) {
             Write-Host (" " + ("-" * 40)) -ForegroundColor DarkGray
             for ($i = 0; $i -lt $manufacturers.Count; $i++) {
                 $mfg = $manufacturers[$i]
-                $count = @($global:allDevices | Where-Object { (Get-DeviceMfg $_) -eq $mfg }).Count
+                $count = @($devices | Where-Object { (Get-DeviceMfg $_) -eq $mfg }).Count
                 $suffix = "s"
                 if ($count -eq 1) { $suffix = "" }
                 Write-Host (" {0,3}  {1}  " -f ($i + 1), $mfg) -NoNewline -ForegroundColor White
@@ -491,7 +437,7 @@ if ($devices.Count -gt 0) {
             }
 
             $selMfg = $manufacturers[$mfgNum - 1]
-            $mfgDevices = @($global:allDevices | Where-Object { (Get-DeviceMfg $_) -eq $selMfg })
+            $mfgDevices = @($devices | Where-Object { (Get-DeviceMfg $_) -eq $selMfg })
 
             $pickingDevice = $true
             while ($pickingDevice) {
@@ -560,7 +506,7 @@ if ([string]::IsNullOrWhiteSpace($CustomImageFile)) {
     Write-Host -ForegroundColor Red "========================================="
     Write-Host -ForegroundColor Red " ERROR: No image was selected!"
     Write-Host -ForegroundColor Red "========================================="
-    Write-Host -ForegroundColor Yellow "Devices found: $($global:allDevices.Count)"
+    Write-Host -ForegroundColor Yellow "Devices found: $($devices.Count)"
     Write-Host -ForegroundColor Yellow "Config URL: $configUrl"
     Write-Host ""
     Write-Host "Press any key to exit..."
