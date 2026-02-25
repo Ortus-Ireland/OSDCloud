@@ -2,25 +2,34 @@
 ### Reads enabled devices from imageStaging.json via IIS ###
 
 $wdsHost = "wds"
+$imagePrefix = "Win11"
 try {
     $serverCfg = Invoke-WebRequest -Uri "http://wds/imageStaging/wdsServer.json" -UseBasicParsing -ErrorAction Stop
     $raw = $serverCfg.Content.Trim()
     if ($raw[0] -eq [char]0xFEFF) { $raw = $raw.Substring(1) }
     $srv = $raw | ConvertFrom-Json
-    if ($srv.hostname) { $wdsHost = $srv.hostname }
+    if ($srv.hostname)    { $wdsHost     = $srv.hostname }
+    if ($srv.imagePrefix) { $imagePrefix = $srv.imagePrefix }
 } catch { }
 
 $configUrl = "http://$wdsHost/imageStaging/imageStaging.json"
 $Index = 1
+$ProIndex = 5
 
-function Get-ImageUrl([string]$Name) {
+function Get-ImageUrl([string]$Name, [string]$ImageVersion) {
     $base = "http://$wdsHost/esd"
-    $prefix = if ($Name -match '^Win\d') { $Name } else { "Win11_$Name" }
+    $pfx = $imagePrefix
+    if ($ImageVersion -match 'Windows\s+(\d+)') { $pfx = "Win$($Matches[1])" }
+    $prefix = if ($Name -match '^Win\d') { $Name } else { "${pfx}_$Name" }
     $wimUrl = "$base/$prefix.wim"
     try {
         $resp = Invoke-WebRequest -Uri $wimUrl -Method Head -UseBasicParsing -ErrorAction Stop
-        if ($resp.StatusCode -eq 200) { return $wimUrl }
+        if ($resp.StatusCode -eq 200) {
+            $script:Index = 1
+            return $wimUrl
+        }
     } catch { }
+    $script:Index = $ProIndex
     return "$base/$prefix.esd"
 }
 
@@ -151,7 +160,7 @@ if ($devices.Count -gt 0) {
     if ($null -ne $chosen) {
         $chosenName = $chosen.name
         if ($chosen.friendlyName) { $chosenName = $chosen.friendlyName }
-        $CustomImageFile = Get-ImageUrl $chosen.name
+        $CustomImageFile = Get-ImageUrl $chosen.name $chosen.imageVersion
         Write-Host ""
         Write-Host -ForegroundColor Green "Selected: $chosenName"
         Write-Host -ForegroundColor Green "Image:    $CustomImageFile"
@@ -475,7 +484,7 @@ if ($devices.Count -gt 0) {
             $idx = $deviceList.SelectedIndex
             if ($idx -ge 0 -and $idx -lt $script:guiDevices.Count) {
                 $d = $script:guiDevices[$idx]
-                $summaryText.Text = "Image: $(Get-ImageUrl $d.name)"
+                $summaryText.Text = "Image: $(Get-ImageUrl $d.name $d.imageVersion)"
             } else {
                 $summaryText.Text = ""
             }
@@ -501,7 +510,7 @@ if ($devices.Count -gt 0) {
         if ($result -eq $true -and $null -ne $script:guiChosen) {
             $chosenName = $script:guiChosen.name
             if ($script:guiChosen.friendlyName) { $chosenName = $script:guiChosen.friendlyName }
-            $CustomImageFile = Get-ImageUrl $script:guiChosen.name
+            $CustomImageFile = Get-ImageUrl $script:guiChosen.name $script:guiChosen.imageVersion
             $ComputerName = $script:guiCompName
             Write-Host ""
             Write-Host -ForegroundColor Green "Selected: $chosenName"
@@ -509,11 +518,11 @@ if ($devices.Count -gt 0) {
             Write-Host -ForegroundColor Green "Name:     $ComputerName"
         }
 
-    } catch {
-        Write-Host -ForegroundColor Red "GUI failed: $_"
-        Write-Host "Press any key to return to menu..."
-        $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-    }
+        } catch {
+            Write-Host -ForegroundColor Red "GUI failed: $_"
+            Write-Host "Press any key to return to menu..."
+            $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
+        }
     }
 }
 
